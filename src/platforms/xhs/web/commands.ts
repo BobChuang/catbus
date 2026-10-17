@@ -433,7 +433,7 @@ export async function itemPublish(ctx: Ctx) {
       }
       postLoc = { name: loc.name, subname: loc.full_address, poi_id: loc.poi_id, poi_type: loc.poi_type }
     }
-    const note = { title: o.title ?? '', desc: o.text ?? '', postTime, postLoc, privacy: o.visibility === 'private' ? 0 : 1 }
+    const note = { title: o.title ?? '', desc: o.text ?? '', postTime, postLoc, privacy: o.visibility === 'private' ? 1 : 0 }
     let data: Record<string, any>
     if (o.video) {
       const video = await readMedia(c.http, o.video)

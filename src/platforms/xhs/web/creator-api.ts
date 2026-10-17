@@ -186,6 +186,12 @@ function emptyVideoMeta(width: number, height: number): VideoMeta {
  * post_note 的视频部分：元数据 → 上传视频 → 上传封面 → 轮询转码 → get_post_note_video_data。
  * 上游用 opencv 截首帧当封面；catbus 不带视频解码器，封面由调用方给。
  */
+/** 浏览器 segments.duration：整秒是 int（3 而非 3.0），非整秒才是小数。 */
+function pyDurationSeconds(durationMs: number): number | PyFloat {
+  const seconds = pyRound(durationMs / 1000, 3)
+  return Number.isInteger(seconds) ? seconds : new PyFloat(seconds)
+}
+
 export async function videoNoteData(c: Creator, note: NoteCommon, video: Uint8Array, cover: Uint8Array): Promise<Record<string, any>> {
   const meta = videoMetadata(video)
   if (!meta) c.ctx.log.warn('读不出视频的时长、宽高、帧率（只支持 MP4 / MOV），按 0 上报，由平台转码后补全')
@@ -208,6 +214,9 @@ export function fileEncryption(c: Creator, fileId: string) {
 
 const BUSINESS_BINDS =
   '{"version":1,"noteId":0,"bizType":0,"noteOrderBind":{},"notePostTiming":{},"noteCollectionBind":{"id":""},"noteSketchCollectionBind":{"id":""},"noteCopyBind":{"copyable":false},"interactionPermissionBind":{"commentPermission":0},"optionRelationList":[]}'
+// 视频笔记的 noteCopyBind.copyable 是 true（浏览器实测 2026-10-17；图片是 false）
+const VIDEO_BUSINESS_BINDS =
+  '{"version":1,"noteId":0,"bizType":0,"noteOrderBind":{},"notePostTiming":{},"noteCollectionBind":{"id":""},"noteSketchCollectionBind":{"id":""},"noteCopyBind":{"copyable":true},"interactionPermissionBind":{"commentPermission":0},"optionRelationList":[]}'
 const scheduledBinds = (postTime: number) => `{"version":1,"noteId":0,"bizType":13,"noteOrderBind":{},"notePostTiming":{"postTime":"${postTime}"},"noteCollectionBind":{"id":""}}`
 const SOURCE = '{"type":"web","ids":"","extraInfo":"{\\"subType\\":\\"official\\",\\"systemId\\":\\"web\\"}"}'
 const CONTEXT_JSON = '{"recommend_title":{"recommend_title_id":"","is_use":3,"used_index":-1},"recommendTitle":[],"recommend_topics":{"used":[]}}'
@@ -242,7 +251,7 @@ function common(type: 'normal' | 'video', n: NoteCommon, withContext: string): R
     note_id: '',
     desc: n.desc,
     source: SOURCE,
-    business_binds: n.postTime == null ? BUSINESS_BINDS : scheduledBinds(n.postTime),
+    business_binds: n.postTime == null ? (type === 'video' ? VIDEO_BUSINESS_BINDS : BUSINESS_BINDS) : scheduledBinds(n.postTime),
     ats: [],
     hash_tag: [],
     post_loc: n.postLoc ?? {},
@@ -297,16 +306,18 @@ export function videoData(n: NoteCommon, videoFileId: string, cover: ImageInfo, 
         frame: { ts: 0, is_user_select: false, is_upload: false },
         stickers: { version: 2, neptune: [] },
         fonts: [],
-        extra_info_json: '{}',
+        extra_info_json: '{"cover_recommend":{"isUseRecommend":false,"isAiCover":false}}',
       },
       chapters: [],
+      summary: '',
       chapter_sync_text: false,
       segments: {
         count: 1,
         need_slice: false,
-        items: [{ mute: 0, speed: 1, start: 0, duration: new PyFloat(pyRound(duration / 1000, 3)), transcoded: 0, media_source: 1, original_metadata: { video: meta.video, audio: meta.audio } }],
+        items: [{ mute: 0, speed: 1, start: 0, duration: pyDurationSeconds(duration), transcoded: 0, media_source: 1, original_metadata: { video: meta.video, audio: meta.audio } }],
       },
       entrance: 'web',
+      pk_cover_biz_relations: [],
     },
   }
 }
