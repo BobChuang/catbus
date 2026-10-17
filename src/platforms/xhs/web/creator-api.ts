@@ -207,7 +207,7 @@ export function fileEncryption(c: Creator, fileId: string) {
 }
 
 const BUSINESS_BINDS =
-  '{"version":1,"noteId":0,"bizType":0,"noteOrderBind":{},"notePostTiming":{},"noteCollectionBind":{"id":""},"noteSketchCollectionBind":{"id":""},"coProduceBind":{"enable":true},"noteCopyBind":{"copyable":true},"interactionPermissionBind":{"commentPermission":0},"optionRelationList":[]}'
+  '{"version":1,"noteId":0,"bizType":0,"noteOrderBind":{},"notePostTiming":{},"noteCollectionBind":{"id":""},"noteSketchCollectionBind":{"id":""},"noteCopyBind":{"copyable":false},"interactionPermissionBind":{"commentPermission":0},"optionRelationList":[]}'
 const scheduledBinds = (postTime: number) => `{"version":1,"noteId":0,"bizType":13,"noteOrderBind":{},"notePostTiming":{"postTime":"${postTime}"},"noteCollectionBind":{"id":""}}`
 const SOURCE = '{"type":"web","ids":"","extraInfo":"{\\"subType\\":\\"official\\",\\"systemId\\":\\"web\\"}"}'
 const CONTEXT_JSON = '{"recommend_title":{"recommend_title_id":"","is_use":3,"used_index":-1},"recommendTitle":[],"recommend_topics":{"used":[]}}'
@@ -266,7 +266,6 @@ export function imageNoteData(n: NoteCommon, images: ImageInfo[]): Record<string
         width: i.width,
         height: i.height,
         metadata: { source: -1 },
-        stickers: { version: 2, floating: [] },
         extra_info_json: `{"mimeType":${JSON.stringify(i.mimeType)},"image_metadata":{"bg_color":"","origin_size":${pyFloatStr(i.size / 1024)}}}`,
       })),
     },

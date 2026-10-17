@@ -25,8 +25,8 @@ export const COOKIE_DOMAIN = '.xiaohongshu.com'
 export const BROWSER = 'chrome_146' as const
 export const CREATOR_BROWSER = 'chrome_149' as const
 
-export const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36'
-export const SEC_CH_UA = '"Not;A=Brand";v="8", "Chromium";v="152", "Google Chrome";v="152"'
+export const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36'
+export const SEC_CH_UA = '"Google Chrome";v="155", "Chromium";v="155", "Not(A:Brand";v="24"'
 export const LOGIN_LANG = 'zh-CN,zh;q=0.9'
 export const BUSINESS_LANG = 'zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7,ja;q=0.6'
 export const ACCEPT_ENCODING = 'gzip, deflate, br, zstd'

@@ -193,7 +193,9 @@ export async function qrcodeStatus(p: Pc, qrId: string, code: string): Promise<n
 }
 
 export async function qrcodeFinish(p: Pc, qrId: string, code: string): Promise<void> {
-  const api = splice('/api/sns/web/v1/login/qrcode/status', { qr_id: qrId, code })
+  // 上游 9818160：status 必须带 X25519 客户端公钥（浏览器实测 2026-10-17），缺它服务端回 471 verifytype 120。
+  const hs = createHandshake()
+  const api = splice('/api/sns/web/v1/login/qrcode/status', { qr_id: qrId, code, client_public_key_base64: hs.client_public_key_base64 })
   const visitor = p.shared().web_session ?? ''
   const s = await p.loginSigned(api, '', 'GET', { tier: '0301', mnsProfile: 'qrcode_poll' })
   s.headers['x-login-mode'] = ''
@@ -207,6 +209,12 @@ export async function qrcodeFinish(p: Pc, qrId: string, code: string): Promise<v
   if (session) p.setCookie('web_session', session)
   else if (!p.shared().web_session || p.shared().web_session === visitor) throw new CatbusError('AUTH_REQUIRED', '二维码登录响应缺少正式 web_session')
   p.sync()
+  // 登录链换新 SSK（activate 协商的那份作废），浏览器存 localStorage.webSsk，签名上下文会带上。
+  const sskEnc = String(d.login_info?.ssk ?? '')
+  if (sskEnc) {
+    p.state.webSsk = JSON.stringify({ 'xhs-pc-web': acceptSsk(hs.private_key_base64, sskEnc) })
+    p.state.fingerprintReady = true
+  }
 }
 
 export async function sendSmsCode(p: Pc, phone: string, zone = '86'): Promise<void> {
@@ -223,12 +231,20 @@ export async function smsLoginCode(p: Pc, phone: string, code: string, zone = '8
   const token = checked?.data?.mobile_token
   if (!checked?.success || !token) throw new CatbusError('AUTH_REQUIRED', checked?.msg || '验证码验证失败')
   const login = '/api/sns/web/v2/login/code'
-  const s2 = await p.loginSigned(login, { mobile_token: token, zone, phone }, 'POST')
-  const body = await jsonOf(await send(p, 'POST', EDITH + login, s2.headers, 'post', { body: s2.body }))
+  // 上游 993fe3c：body 需带 X25519 客户端公钥，响应 data.ssk 与扫码链路同协议。
+  const hs = createHandshake()
+  const s2 = await p.loginSigned(login, { mobile_token: token, zone, phone, client_public_key_base64: hs.client_public_key_base64 }, 'POST')
+  const res2 = await send(p, 'POST', EDITH + login, s2.headers, 'post', { body: s2.body, appendShared: ['web_session', 'id_token', 'x-rednote-datactry', 'x-rednote-holderctry'] })
+  const body = await jsonOf(res2)
   const session = body?.data?.session
   if (!body?.success || !session) throw new CatbusError('AUTH_REQUIRED', body?.msg || '登录失败')
   p.setCookie('web_session', String(session))
   p.sync()
+  const sskEnc = String(body?.data?.ssk ?? '')
+  if (sskEnc) {
+    p.state.webSsk = JSON.stringify({ 'xhs-pc-web': acceptSsk(hs.private_key_base64, sskEnc) })
+    p.state.fingerprintReady = true
+  }
 }
 
 /** 上游 XHSLoginApi.get_user_info：user/me，guest 为 false 才算正式登录。 */

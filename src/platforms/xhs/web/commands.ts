@@ -401,7 +401,7 @@ export async function itemDownload(ctx: Ctx) {
     const { id, media } = await noteMedia(p, ctx.args.item!)
     return downloadMedia(ctx, p.http, id, media, {
       headers: [
-        ['user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36'],
+        ['user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36'],
         ['referer', `${WEB}/`],
       ],
       ext: (m) => (m.type === 'image' ? 'jpg' : 'mp4'),
@@ -433,7 +433,7 @@ export async function itemPublish(ctx: Ctx) {
       }
       postLoc = { name: loc.name, subname: loc.full_address, poi_id: loc.poi_id, poi_type: loc.poi_type }
     }
-    const note = { title: o.title ?? '', desc: o.text ?? '', postTime, postLoc, privacy: o.visibility === 'private' ? 1 : 0 }
+    const note = { title: o.title ?? '', desc: o.text ?? '', postTime, postLoc, privacy: o.visibility === 'private' ? 0 : 1 }
     let data: Record<string, any>
     if (o.video) {
       const video = await readMedia(c.http, o.video)

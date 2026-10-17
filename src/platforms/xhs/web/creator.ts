@@ -82,7 +82,7 @@ function template(method: string, o: CreatorSignOptions): Headers {
   if (o.includeOrigin ?? method.toUpperCase() !== 'GET') h.origin = o.origin ?? CREATOR
   if (method.toUpperCase() !== 'GET') h['content-type'] = 'application/json'
   if (o.clientHints) {
-    h['sec-ch-ua'] = '"Not;A=Brand";v="8", "Chromium";v="152", "Google Chrome";v="152"'
+    h['sec-ch-ua'] = '"Google Chrome";v="155", "Chromium";v="155", "Not(A:Brand";v="24"'
     h['sec-ch-ua-mobile'] = '?0'
     h['sec-ch-ua-platform'] = '"Windows"'
   }
@@ -175,7 +175,7 @@ export class Creator extends Session {
   }
 
   /**
-   * 上游 XHS_Creator_Apis._request_params：b1 默认用 login 快照、XHR 不带 sec-ch-ua*，UA 固定 Chrome 152。
+   * 上游 XHS_Creator_Apis._request_params：b1 默认用 login 快照、XHR 不带 sec-ch-ua*，UA 固定 Chrome 155。
    * order 为 null 时不排序（post_note 带 x-rap-param，上游没有核实过它的头顺序）。
    */
   async business(
