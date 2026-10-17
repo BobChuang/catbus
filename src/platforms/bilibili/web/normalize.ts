@@ -124,6 +124,38 @@ export function feedVideo(v: any): Item {
   )
 }
 
+/**
+ * 关注动态流里的视频投稿（feed/all 的 items 项）。只认 MAJOR_TYPE_ARCHIVE；转发、图文等别的动态没有 bvid，返回 null 由调用方跳过。
+ * 播放量在 archive.stat.play；点赞、评论、转发在 modules.module_stat 的 {count}（实测每条都有）。
+ * 收藏（module_stat.favorite）在这个流里实测是 null，所以 collects 为 null。
+ */
+export function followingVideo(v: any): Item | null {
+  const a = v?.modules?.module_dynamic?.major?.archive
+  if (!a?.bvid) return null
+  const au = v.modules?.module_author
+  const st = v.modules?.module_stat
+  return n.item(
+    {
+      id: a.bvid,
+      kind: 'video',
+      url: videoUrl(a.bvid),
+      title: n.str(a.title),
+      text: n.str(a.desc),
+      author: ref(au?.mid, au?.name),
+      created_at: n.time(au?.pub_ts),
+      cover: n.url(a.cover),
+      stats: {
+        views: n.count(a.stat?.play),
+        likes: n.count(st?.like?.count),
+        comments: n.count(st?.comment?.count),
+        collects: n.count(st?.favorite?.count),
+        shares: n.count(st?.forward?.count),
+      },
+    },
+    v,
+  )
+}
+
 /** 收藏夹内容（fav/resource/list 的 medias 项）。 */
 export function favVideo(v: any): Item {
   return n.item(

@@ -84,7 +84,7 @@ B 站是 catbus 的参考实现（`src/platforms/bilibili/web/`），也是 10 �
 
 | 命令 | 状态 | 说明 |
 |---|---|---|
-| `feed list` | ◐ | 推荐 / 热门 / 关注流。following 规划中。取值：`--kind` recommend / hot / following。 |
+| `feed list` | ◐ | 推荐 / 热门 / 关注流。following 非上游：上游没有动态流接口，请求按网页端动态页补的（x/polymer/web-dynamic/v1/feed/all），没有对拍；只列关注的人的视频投稿，需要登录。取值：`--kind` recommend / hot / following。 |
 
 ### live
 

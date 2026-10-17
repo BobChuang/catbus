@@ -213,6 +213,21 @@ export async function popular(b: Bili, page = 1, pageSize = 20) {
   return b.get(`${API}/x/web-interface/popular`, { headers: h.get(), query: await b.wbi(params) })
 }
 
+/**
+ * 关注的人的视频动态流（非上游：上游没有动态流接口，请求按网页端动态页 t.bilibili.com 补的，没有对拍）。
+ * `type=video` 只取视频投稿；`offset` 是上一页返回的 `data.offset`，首页不带。
+ */
+export function followingFeed(b: Bili, offset = '') {
+  const h = headers('GET', { origin: ORIGIN.dynamic }).referer(`${ORIGIN.dynamic}/`)
+  const query: Pairs = [
+    ['type', 'video'],
+    ['timezone_offset', -480],
+    ['features', 'itemOpusStyle'],
+  ]
+  if (offset) query.push(['offset', offset])
+  return b.get(`${API}/x/polymer/web-dynamic/v1/feed/all`, { headers: h.get(), query })
+}
+
 // ================================================================ 互动（BiliInteractApi）
 
 function playerFields(paused = false, played = 0): Pairs {

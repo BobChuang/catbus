@@ -101,7 +101,7 @@ export default definePlatform({
         'comment unlike': 'none',
 
         'feed list': impl('partial', 'feedList', {
-          note: 'following 规划中',
+          note: 'following 非上游：上游没有动态流接口，请求按网页端动态页补的（x/polymer/web-dynamic/v1/feed/all），没有对拍；只列关注的人的视频投稿，需要登录',
           options: { kind: filter.kind('recommend', 'hot', 'following') },
         }),
 
