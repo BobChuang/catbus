@@ -168,7 +168,7 @@
 
 - xhs `feed list`：following 规划中
 - douyin `feed list`：hot、following 规划中
-- bilibili `feed list`：following 规划中
+- bilibili `feed list`：following 非上游：上游没有动态流接口，请求按网页端动态页补的（x/polymer/web-dynamic/v1/feed/all），没有对拍；只列关注的人的视频投稿，需要登录
 - kuaishou `feed list`：following 只有首屏
 - x `feed list`：following 规划中
 - `feed list --kind` 取值：xhs recommend / following；douyin recommend / hot / following；tiktok recommend / following；bilibili recommend / hot / following；kuaishou recommend / following；weibo recommend / hot / following；xianyu recommend；taobao recommend；jd recommend；x recommend / following

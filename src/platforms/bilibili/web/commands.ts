@@ -10,7 +10,7 @@ import * as pb from '../../../core/pb.js'
 import { jsonLoads } from '../../../core/py.js'
 import * as rand from '../../../core/rand.js'
 import type { HandlerContext } from '../../../core/registry.js'
-import type { AuthStatus, Credential, Danmaku, Media, Subtitle } from '../../../core/schemas.js'
+import type { AuthStatus, Credential, Danmaku, Item, Media, Subtitle } from '../../../core/schemas.js'
 import { openSocket, reconnecting } from '../../../core/stream.js'
 import { paged, scope } from '../../../core/toolkit.js'
 import * as api from './api.js'
@@ -493,8 +493,14 @@ export function showlist(items: any[]): string {
 
 export async function feedList(ctx: Ctx) {
   const kind = (ctx.options.kind as string) ?? 'recommend'
-  if (kind === 'following') throw new CatbusError('NOT_IMPLEMENTED', 'bilibili 的 feed list --kind following 尚未实现', { detail: { upstream: 'none' } })
   const b = await bili(ctx)
+  if (kind === 'following') {
+    // 游标就是接口返回的 offset（不透明字符串）。关注流的 offset 每页都变，不会像评论那样原样返回
+    const d = await api.followingFeed(b, ctx.cursor ?? '')
+    const raw: any[] = d?.items ?? []
+    const list = raw.map(norm.followingVideo).filter((v): v is Item => v != null)
+    return paged(list, d?.offset, Boolean(d?.has_more) && raw.length > 0)
+  }
   if (kind === 'hot') {
     const p = page(ctx)
     const d = await api.popular(b, p)

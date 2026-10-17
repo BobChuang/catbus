@@ -450,6 +450,42 @@ describe('bilibili 命令：审查修复', () => {
     expect(web().commands.get('folder items')).toMatchObject({ upstream: 'partial', note: expect.stringContaining('非上游') })
   })
 
+  it('feed list --kind following：关注的人的视频动态，游标是接口的 offset，跳过没有 bvid 的动态（非上游，没有对拍）', async () => {
+    const FEED = 'https://api.bilibili.com/x/polymer/web-dynamic/v1/feed/all?type=video&timezone_offset=-480&features=itemOpusStyle'
+    const dyn = (bvid: string | null) => ({
+      id_str: '1',
+      type: bvid ? 'DYNAMIC_TYPE_AV' : 'DYNAMIC_TYPE_FORWARD',
+      modules: {
+        // 真机：收藏、投币在这个流里是 null（20/20 条），点赞 / 评论 / 转发有 count
+        module_stat: { like: { count: 32 }, comment: { count: 3 }, forward: { count: 1 }, favorite: null, coin: null },
+        module_author: { mid: 2, name: 'U', pub_ts: '1700000000' },
+        module_dynamic: { major: bvid ? { type: 'MAJOR_TYPE_ARCHIVE', archive: { bvid, title: 'T', desc: 'D', cover: 'http://i0.hdslb.com/c.jpg', stat: { play: '1.2万', danmaku: '3' } } } : null },
+      },
+    })
+    const first = await runCommand('feedList', { options: { kind: 'following' } }, () => ok({ items: [dyn(BVID), dyn(null)], offset: '1000000000000000001', has_more: true }))
+    expect(first.urls).toEqual([FEED])
+    expect(first.result.page).toEqual({ cursor: '1000000000000000001', has_more: true })
+    expect(first.result.data).toHaveLength(1)
+    expect(first.result.data[0]).toMatchObject({
+      id: BVID,
+      kind: 'video',
+      title: 'T',
+      text: 'D',
+      author: { id: '2', name: 'U' },
+      cover: 'https://i0.hdslb.com/c.jpg',
+      created_at: '2023-11-15T06:13:20+08:00',
+      stats: { views: 12000, likes: 32, comments: 3, collects: null, shares: 1 },
+    })
+    // 续翻：offset 原样带上
+    const next = await runCommand('feedList', { options: { kind: 'following' }, cursor: first.result.page.cursor }, () => ok({ items: [dyn(BVID)], offset: '1000000000000000000', has_more: false }))
+    expect(next.urls[0]).toBe(`${FEED}&offset=1000000000000000001`)
+    expect(next.result.page).toEqual({ cursor: null, has_more: false })
+    // 这一批一条动态都没有时停下，免得 --all 空翻
+    const empty = await runCommand('feedList', { options: { kind: 'following' } }, () => ok({ items: [], offset: 'x', has_more: true }))
+    expect(empty.result.page).toEqual({ cursor: null, has_more: false })
+    expect(web().commands.get('feed list')).toMatchObject({ upstream: 'partial', note: expect.stringContaining('非上游') })
+  })
+
   it('item uncollect 不带 --folder：按 fav_state 找收着它的收藏夹', async () => {
     const { urls, bodies, result } = await runCommand('itemUncollect', { args: { item: BVID } }, (url) =>
       url.includes('list-all') ? ok({ list: [{ id: 11, fav_state: 0 }, { id: 22, fav_state: 1 }, { id: 33, fav_state: 1 }] }) : ok({}),
