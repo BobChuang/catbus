@@ -118,8 +118,9 @@ export async function danmakuSeg(b: Bili, aid: string | number, cid: string | nu
       ['pid', aid],
       ['segment_index', segment],
       ['pull_mode', 1],
-      ['ps', 0],
-      ['pe', 120000],
+      // 注意：不要传 ps/pe。实测带上 ps=0&pe=120000 时，B 站 seg.so 对
+      // segment_index > 1（即 6 分钟之后）的长视频段返回 404（上游 bug）；
+      // 去掉 ps/pe 后全部段都能取到，覆盖整段视频时长（每 6 分钟一段）。
     ],
     '1315873',
   )

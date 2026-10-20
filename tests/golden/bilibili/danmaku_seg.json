@@ -9,7 +9,7 @@
   "requests": [
     {
       "method": "GET",
-      "url": "https://api.bilibili.com/x/v2/dm/wbi/web/seg.so?type=1&oid=137649199&pid=80433022&segment_index=2&pull_mode=1&ps=0&pe=120000&web_location=1315873&w_rid=29c24906086c132bd8e5fddf0a7652b5&wts=1790000000",
+      "url": "https://api.bilibili.com/x/v2/dm/wbi/web/seg.so?type=1&oid=137649199&pid=80433022&segment_index=2&pull_mode=1&web_location=1315873&w_rid=b0490ddeae15042da9182c3841334b40&wts=1790000000",
       "headers": [
         [
           "sec-ch-ua",
