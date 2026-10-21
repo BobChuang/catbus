@@ -8,7 +8,7 @@
 | 上游仓库 | [cv-cat/BilibiliApis](https://github.com/cv-cat/BilibiliApis) |
 | 移植基线 | master 上的 [`0234d81`](https://github.com/cv-cat/BilibiliApis/commit/0234d8188b40314d011358d60424bb88fd291a1f)，记录在 [`src/platforms/bilibili/UPSTREAM`](../../src/platforms/bilibili/UPSTREAM) |
 | 端 | web ✓ · app ○ 规划中 · pc ○ 规划中 |
-| 命令（web） | 已实现 48 条（✓ 41 · ◐ 7），规划中 ○ 30 条 |
+| 命令（web） | 已实现 49 条（✓ 41 · ◐ 8），规划中 ○ 29 条 |
 
 B 站是 catbus 的参考实现（`src/platforms/bilibili/web/`），也是 10 个平台里登录方式最全的。命令表由注册表生成，与 `catbus platforms bilibili` 一致；选项以 `catbus bilibili <resource> <action> --help` 为准。通用的命令语法、输出结构见 [AGENTS.md 第 4 节](../../AGENTS.md#4-命令规范)。
 
@@ -75,10 +75,11 @@ B 站是 catbus 的参考实现（`src/platforms/bilibili/web/`），也是 10 �
 
 | 命令 | 状态 | 说明 |
 |---|---|---|
-| `comment list` | ◐ | 评论列表。动态只支持纯文字和转发：图文动态（带图）的评论区挂在相簿上，上游没有查相簿 ID 的接口；稿件、专栏不受影响。取值：`--sort` popular / latest。 |
+| `comment list` | ◐ | 评论列表。支持视频、专栏、纯文字 / 转发动态及图文动态；图文动态通过非上游动态详情接口获取相簿评论区 ID，没有对拍。取值：`--sort` popular / latest。 |
 | `comment add` | ◐ | 发表评论。动态只支持纯文字和转发：图文动态（带图）的评论区挂在相簿上，上游没有查相簿 ID 的接口；稿件、专栏不受影响。私有选项 `--root`。 |
 | `comment delete` | ◐ | 删除评论。动态只支持纯文字和转发：图文动态（带图）的评论区挂在相簿上，上游没有查相簿 ID 的接口；稿件、专栏不受影响。危险操作，需要确认。 |
-| `comment replies`、`comment like`、`comment unlike` | ○ | 规划中 |
+| `comment replies <item> <comment>` | ◐ | 视频、专栏、图文动态根评论下的可见楼中楼。`<comment>` 为 `comment list` 返回的根评论 ID。使用非上游的楼中楼及动态详情接口，没有对拍；纯文字和转发动态的楼中楼尚未验证，不支持。支持 `--limit`、`--cursor`、`--all`、jsonl 和 `--raw`。 |
+| `comment like`、`comment unlike` | ○ | 规划中 |
 
 ### feed
 
@@ -186,7 +187,8 @@ B 站是 catbus 的参考实现（`src/platforms/bilibili/web/`），也是 10 �
 | 参数 | 接受的形式 |
 |---|---|
 | 稿件 `<item>` | BV 号（`BV1xx411c7mD`）、av 号（`av170001`）、纯数字 aid、视频页链接，或分享短链 `b23.tv/...` |
-| 评论区（`comment list` / `add` / `delete` 的 `<item>`） | 稿件（同上）；专栏（`cv<id>` 或专栏链接 `/read/cv<id>`）；动态（动态链接 `t.bilibili.com/<id>`、`bilibili.com/opus/<id>`、`m.bilibili.com/dynamic/<id>`，17 位以上的动态 ID，或 `dyn:<id>`）。动态只支持纯文字和转发 |
+| 评论区（`comment list` / `add` / `delete` 的 `<item>`） | 稿件（同上）；专栏（`cv<id>` 或专栏链接 `/read/cv<id>`）；动态（动态链接 `t.bilibili.com/<id>`、`bilibili.com/opus/<id>`、`m.bilibili.com/dynamic/<id>`，17 位以上的动态 ID，或 `dyn:<id>`）。`list` 支持纯文字、转发和图文动态，`add` / `delete` 仍只支持纯文字和转发 |
+| 楼中楼（`comment replies <item> <comment>`） | `<item>` 接受视频（同稿件）、专栏（`cv<id>` 或专栏链接）、图文动态（动态链接或 ID）。`<comment>` 为根评论 ID，不是某条子回复 ID |
 | 用户 `<user>` | mid（数字，也可以写成 `uid:<mid>`）、空间链接 `https://space.bilibili.com/<mid>`，或 `me` |
 | 直播间 `<room>` | 房间号（短号会自动换成真实房间号）、直播间链接 `https://live.bilibili.com/<房间号>`；也可以传主播（空间链接、`uid:<mid>`、`me`），自动查出他的直播间 |
 | 收藏夹 `<folder>` | 收藏夹 ID、`folder list` 输出的 url（`.../favlist?fid=<id>`），或播放列表链接（`ml<id>`） |
@@ -213,6 +215,11 @@ catbus bilibili user items "<space_url>" --sort views --keyword 教程 --all -o 
 
 # 评论（按时间排序）、字幕
 catbus bilibili comment list BV1xx411c7mD --sort latest --limit 100 -o jsonl
+catbus bilibili comment replies BV1xx411c7mD <根评论ID> --limit 100 -o jsonl
+catbus bilibili comment replies BV1xx411c7mD <根评论ID> --cursor '<page.cursor>' --all
+catbus bilibili comment replies cv<专栏ID> <根评论ID> --all -o jsonl
+catbus bilibili comment list 'https://www.bilibili.com/opus/<图文动态ID>'
+catbus bilibili comment replies 'https://www.bilibili.com/opus/<图文动态ID>' <根评论ID> --all -o jsonl
 catbus bilibili item subtitles BV1xx411c7mD
 
 # 直播：按主播找直播间并监听 10 分钟
@@ -224,9 +231,11 @@ catbus bilibili item coin BV1xx411c7mD --count 1 --like -y
 
 ## 已知限制
 
+- **`comment replies` 支持视频、专栏和图文动态的可见楼中楼**：每页请求 10 条，默认只取一页；`--limit` 可跨页或截在页中，续读时原样传回 `page.cursor`。`parent_id` 保留直接被回复的评论 ID，可能指向另一条子回复；`--raw` 保留 `root` / `parent`。`comment list --raw` 的 `replies` 只是少量预览，列表不保证覆盖已删除或隐藏回复。
+- **读取图文动态需要解析相簿评论区**：动态详情的 `basic.comment_type=11`、`comment_id_str` 才是请求用的类型和 oid，不能直接拿动态 ID 请求；输出 `item_id` 仍为动态 ID，同一命令翻页时只取一次详情。2026-10-20 已只读验证图文动态主评论、2 条楼中楼及直接父 ID；视频和专栏各验证前两页（10 条 + 5 条）。图文动态跨页由假数据离线测试覆盖。纯文字和转发动态的楼中楼尚未验证，返回 `UNSUPPORTED`。
 - **`danmaku list` 不完整**：上游 bug，分段请求固定带着 `ps=0&pe=120000`。6 分钟以内的视频**只返回前 2 分钟的弹幕，而且不报错**；超过 6 分钟的视频报 `UPSTREAM`（HTTP 404）。修复已提给上游，集成前不要依赖这条命令做完整统计。
 - **`item delete` 过不了人机验证**：撤稿需要极验点选，验证码参数从哪里申请上游没写，catbus 还不能自动通过，会报 `RISK_CONTROL`。请在网页端撤稿。
-- **动态评论区只支持纯文字和转发动态**：图文动态（带图）的评论区挂在相簿上，上游没有从动态 ID 查相簿 ID 的接口。稿件、专栏的评论区不受影响。
+- **动态评论写操作仍只支持纯文字和转发动态**：`comment add` / `delete` 未扩展到图文动态。视频 / 专栏动态请直接传 BV / cv 号；opus 链接中的专栏不自动识别成 cv 号。
 - **`user get` 没有计数**：`stats.followers / following / items / likes` 恒为 null，上游只有不含计数的用户信息接口。`item list` 的 `author.name` 也是空的。
 - **`folder items` 不是上游能力**：请求按网页端收藏夹页补的，没有对拍，只列出稿件。
 - **还没真机验证**：`item coin` / `triple` / `publish`、`dynamic publish` / `delete`、`article publish`（正式提交）、`live send` / `start` / `stop`、`live listen`、`item download`。已验证：点赞、收藏、评论的增删、`danmaku send`、专栏草稿的存取删。

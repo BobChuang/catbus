@@ -305,6 +305,8 @@ catbus xianyu item get <id> -e app           # app 端尚未实现：NOT_IMPLEME
 - 商品评价用 `comment list <product>`。
   - 传商品 URL 时，自动识别为商品。
   - 传纯 ID 时要加 `--product`，否则按 item 处理。
+- bilibili 的 `comment replies <item> <comment>` 支持视频、专栏和图文动态：`<item>` 接受 BV 号、av 号、aid、视频链接（含分享短链），`cv<id>` / 专栏链接，或动态链接 / ID。纯文字和转发动态的楼中楼尚未验证，不开放。`<comment>` 是 `comment list` 返回的根评论 ID。分页读取该根评论下的可见楼中楼，沿用 `--limit`、`--cursor`、`--all`；`comment list --raw` 中的少量 `replies` 只是预览。
+- bilibili 的 `comment list` / `replies` 读取图文动态时，先用非上游的动态详情接口取 `basic.comment_type=11` 与 `comment_id_str`（相簿 ID），不能把动态 ID 当作评论区 oid；输出 `Comment.item_id` 仍为动态 ID。同一条命令翻页时复用解析结果。`comment add` / `delete` 仍只支持纯文字和转发动态。
 - `msg send --item <item>`：对商品卖家 / 客服发消息（闲鱼、淘宝、京东）。
 - `msg send --to <user> --item <item>`：就这件商品给指定用户发消息（闲鱼：卖家主动联系买家）。不支持的平台报 `UNSUPPORTED`。
 - taobao 没有按用户查询、按用户发起会话的接口：`user get <user>` 的 `<user>` 只接受商品链接，返回这件商品的卖家；`msg send` 不支持 `--to`（报 `UNSUPPORTED`）。
@@ -609,6 +611,8 @@ stdout 只输出结果。日志、提示、进度、二维码一律输出到 std
 | Keyword | `text heat` |
 | Topic | `id name url stats{views items}` |
 | Poi | `id name address` |
+
+`Comment.parent_id` 表示直接被回复的评论 ID；楼中楼回复可能指向另一条子回复，不能统一填成根评论 ID。bilibili 的原始 `root` / `parent` 通过 `--raw` 保留。
 
 **直播**：
 

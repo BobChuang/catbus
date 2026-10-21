@@ -9,6 +9,7 @@ const { h, impl } = handlers(() => import('./web/commands.js'))
 const item = { name: 'item', summary: '稿件：BV 号、av 号或 URL' }
 /** 评论区可以是稿件、专栏或动态，按参数形态识别（AGENTS 4.8：参数由平台归一化）。 */
 const replyTarget = { name: 'item', summary: '稿件（BV 号、av 号、视频链接）、专栏（cv 号、专栏链接）或动态（动态链接、动态 ID；只支持纯文字和转发动态）' }
+const readReplyTarget = { name: 'item', summary: '稿件（BV 号、av 号、aid、视频链接）、专栏（cv 号、专栏链接）或动态（链接、ID）' }
 /** 动态的评论区（type 17）只对纯文字和转发动态成立，图文动态挂在相簿上，上游没有查相簿 ID 的接口。 */
 const DYNAMIC_REPLY_NOTE = '动态只支持纯文字和转发：图文动态（带图）的评论区挂在相簿上，上游没有查相簿 ID 的接口；稿件、专栏不受影响'
 /** 直播间参数也接受主播，按 get_room_by_mid 换成房间号。 */
@@ -88,8 +89,15 @@ export default definePlatform({
         'item delete': impl('partial', 'itemDelete', { note: '需要人机验证（极验点选），catbus 还不能自动通过，会报 RISK_CONTROL' }),
         'item categories': impl('full', 'itemCategories'),
 
-        'comment list': impl('partial', 'commentList', { note: DYNAMIC_REPLY_NOTE, args: [replyTarget], options: { sort: filter.sort('popular', 'latest') } }),
-        'comment replies': 'none',
+        'comment list': impl('partial', 'commentList', {
+          note: '支持视频、专栏、纯文字 / 转发动态及图文动态；图文动态通过非上游动态详情接口获取相簿评论区 ID，没有对拍',
+          args: [readReplyTarget],
+          options: { sort: filter.sort('popular', 'latest') },
+        }),
+        'comment replies': impl('partial', 'commentReplies', {
+          note: '非上游：楼中楼及动态详情接口，没有对拍；支持视频、专栏、图文动态根评论下的可见回复，纯文字和转发动态的楼中楼尚未验证，不支持',
+          args: [readReplyTarget, { name: 'comment', summary: '根评论 ID（comment list 输出的 id）' }],
+        }),
         'comment add': impl('partial', 'commentAdd', {
           note: DYNAMIC_REPLY_NOTE,
           args: [replyTarget, { name: 'text', summary: '评论内容' }],

@@ -41,9 +41,12 @@ export interface ReplyTarget {
   itemId: string
 }
 
+export type ReadReplyTarget = Omit<ReplyTarget, 'type'> & { type: ReplyType | 11 }
+export const READ_DYNAMIC_REPLY_HINT = '图文动态的评论区需通过动态详情获取相簿 ID；纯文字和转发动态的主评论使用动态 ID，专栏请传 cv 号或专栏链接'
+
 /**
  * 动态的评论区只有纯文字和转发动态是 type 17 + 动态 ID；图文动态（带图）的评论区挂在相簿上（type 11 + 相簿 rid），
- * 专栏动态挂在专栏上（type 12 + cv 号）。从动态 ID 查 rid / cv 号要动态详情接口，上游没有，catbus 也不自己加。
+ * 专栏动态挂在专栏上（type 12 + cv 号）。写操作保持这个范围；读取图文动态使用下面的非上游详情解析。
  */
 export const DYNAMIC_REPLY_HINT = '动态只支持纯文字和转发：图文动态（带图）的评论区挂在相簿上，上游没有查相簿 ID 的接口；专栏请传 cv 号或专栏链接'
 
@@ -75,9 +78,21 @@ export async function resolveReplyTarget(b: Bili, input: string): Promise<ReplyT
     return { type: 1, oid: aid, itemId: bvid }
   } catch {
     throw new CatbusError('USAGE', `无法识别的评论区：${input}`, {
-      hint: `传稿件（BV 号、av 号、视频链接）、专栏（cv 号或专栏链接）或动态（动态链接或动态 ID）；${DYNAMIC_REPLY_HINT}`,
+      hint: '传稿件（BV 号、av 号、视频链接）、专栏（cv 号或专栏链接）或动态（动态链接或动态 ID）',
     })
   }
+}
+
+/** 读取图文动态评论时使用真实相簿 oid；写操作仍沿用 resolveReplyTarget 的范围。 */
+export async function resolveReadReplyTarget(b: Bili, t: ReplyTarget): Promise<ReadReplyTarget> {
+  if (t.type !== 17) return t
+  const item = (await api.dynamicDetail(b, t.oid))?.item
+  if (!item) throw new CatbusError('UPSTREAM', '动态详情没有返回动态对象')
+  if (item.type === 'DYNAMIC_TYPE_WORD' || item.type === 'DYNAMIC_TYPE_FORWARD') return t
+  if (item.type !== 'DYNAMIC_TYPE_DRAW') throw new CatbusError('UNSUPPORTED', '尚不支持这种动态的评论区', { hint: '视频、专栏请直接传 BV 号或 cv 号；动态目前只读取纯文字、转发和图文类型的主评论' })
+  const basic = item.basic
+  if (basic?.comment_type !== 11 || !basic.comment_id_str) throw new CatbusError('UPSTREAM', '图文动态详情没有返回相簿评论区 ID')
+  return { type: 11, oid: String(basic.comment_id_str), itemId: t.itemId }
 }
 
 /** 动态：动态链接（t.bilibili.com、opus、m.bilibili.com/dynamic）、`dyn:<id>` 或纯数字的动态 ID。dynamic publish 输出的 id、url 都能直接用。 */

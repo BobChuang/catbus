@@ -145,6 +145,34 @@ export async function replies(b: Bili, oid: string | number, type = 1, offset = 
   return b.get(`${API}/x/v2/reply/wbi/main`, { headers: h.get(), query: await b.wbi(withLocation(params, '1315875')) })
 }
 
+/**
+ * 非上游：视频、专栏、图文动态根评论的楼中楼（上游 get_replies 只读主评论）。
+ * 按只读验证补充 /x/v2/reply/reply：type 1 用 aid、12 用 cv 号的数字、11 用相簿 ID。
+ * 固定每页 10 条，--limit 截断与续读由 core 处理，避免改变页大小导致漏读。
+ */
+export function replyReplies(b: Bili, itemId: string, oid: string, root: string, page = 1, type: 1 | 11 | 12 = 1) {
+  const referer = type === 12 ? `${MAIN}/read/${itemId}` : type === 11 ? `${MAIN}/opus/${itemId}` : `${MAIN}/video/${itemId}/`
+  const h = headers('GET').referer(referer)
+  return b.get(`${API}/x/v2/reply/reply`, {
+    headers: h.get(),
+    query: [
+      ['type', type],
+      ['oid', oid],
+      ['root', root],
+      ['pn', page],
+      ['ps', 10],
+    ],
+  })
+}
+
+/** 非上游：按只读验证补充动态详情，用 basic.comment_type / comment_id_str 解析图文动态的相簿评论区。 */
+export function dynamicDetail(b: Bili, id: string) {
+  return b.get(`${API}/x/polymer/web-dynamic/v1/detail`, {
+    headers: headers('GET').referer(`${MAIN}/opus/${id}`).get(),
+    query: [['id', id], ['features', 'itemOpusStyle']],
+  })
+}
+
 export async function userInfo(b: Bili, mid: string) {
   const h = headers('GET', { origin: ORIGIN.space }).referer(`https://space.bilibili.com/${mid}`)
   const params = withLocation(

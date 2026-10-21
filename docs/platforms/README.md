@@ -7,7 +7,7 @@
 | [小红书](xhs.md) | `xhs` | `xiaohongshu` `rednote` | 笔记 | **扫码** · 短信 · cookie；子站点 `creator` | 43（38 · 5） | 28 | [Spider_XHS](https://github.com/cv-cat/Spider_XHS) |
 | [抖音](douyin.md) | `douyin` | `dy` | 作品 | **扫码** · 短信 · cookie | 40（34 · 6） | 31 | [DouYin_Spider](https://github.com/cv-cat/DouYin_Spider) |
 | [TikTok](tiktok.md) | `tiktok` | `tt` | 视频 | **cookie**（或浏览器会话 JSON） | 55（47 · 8） | 20 | [TiktokApis](https://github.com/cv-cat/TiktokApis) |
-| [B 站](bilibili.md) | `bilibili` | `bili` `b` | 稿件 | **扫码** · 短信 · 账密 · cookie | 48（41 · 7） | 30 | [BilibiliApis](https://github.com/cv-cat/BilibiliApis) |
+| [B 站](bilibili.md) | `bilibili` | `bili` `b` | 稿件 | **扫码** · 短信 · 账密 · cookie | 49（41 · 8） | 29 | [BilibiliApis](https://github.com/cv-cat/BilibiliApis) |
 | [快手](kuaishou.md) | `kuaishou` | `ks` | 作品 | **扫码** · 短信 · cookie | 30（25 · 5） | 41 | [KuaiShou-Spider](https://github.com/cv-cat/KuaiShou-Spider) |
 | [微博](weibo.md) | `weibo` | `wb` | 微博 | **cookie** | 12（10 · 2） | 55 | [WeiboApis](https://github.com/cv-cat/WeiboApis) |
 | [闲鱼](xianyu.md) | `xianyu` | `goofish` `xy` | 闲置商品 | **扫码** · cookie | 12（11 · 1） | 18 | [XianYuApis](https://github.com/cv-cat/XianYuApis) |

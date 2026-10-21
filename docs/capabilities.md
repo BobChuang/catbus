@@ -139,16 +139,17 @@
 | 命令 | xhs | douyin | tiktok | bilibili | kuaishou | weibo | xianyu | taobao | jd | x | 12306 |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | comment list | ◐ | ✓ | ✓ | ◐ | ◐ | ◐ | — | ○ | ◐ | ✓ | — |
-| comment replies | ✓ | ✓ | ✓ | ○ | ◐ | ○ | — | — | — | ○ | — |
+| comment replies | ✓ | ✓ | ✓ | ◐ | ◐ | ○ | — | — | — | ○ | — |
 | comment add | ○ | ✓ | ✓ | ◐ | ○ | ○ | — | — | — | ✓ | — |
 | comment delete | ○ | ○ | ○ | ◐ | ○ | ○ | — | — | — | ✓ | — |
 | comment like / unlike | ○ | ○ | ○ | ○ | ○ | ○ | — | — | — | ✓ | — |
 
 - xhs `comment list`：--product 规划中
-- bilibili `comment list`：动态只支持纯文字和转发：图文动态（带图）的评论区挂在相簿上，上游没有查相簿 ID 的接口；稿件、专栏不受影响
+- bilibili `comment list`：支持视频、专栏、纯文字 / 转发动态及图文动态；图文动态通过非上游动态详情接口获取相簿评论区 ID，没有对拍
 - kuaishou `comment list`：--product 规划中
 - weibo `comment list`：只有一级评论
 - jd `comment list`：只有第一页；--limit N 在一次请求里取 N 条
+- bilibili `comment replies`：非上游：楼中楼及动态详情接口，没有对拍；支持视频、专栏、图文动态根评论下的可见回复，纯文字和转发动态的楼中楼尚未验证，不支持
 - kuaishou `comment replies`：上游的二级评论接口只核对过一组抓包参数，其余评论的结果没有经过上游核对
 - bilibili `comment add`：动态只支持纯文字和转发：图文动态（带图）的评论区挂在相簿上，上游没有查相簿 ID 的接口；稿件、专栏不受影响
 - bilibili `comment delete`：动态只支持纯文字和转发：图文动态（带图）的评论区挂在相簿上，上游没有查相簿 ID 的接口；稿件、专栏不受影响

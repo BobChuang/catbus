@@ -163,7 +163,8 @@
   - `apis/bili_live_apis.py`：`get_room_init`、`get_room_by_mid`、`get_room_info`、`send_gift`、`send_danmaku(color, mode, reply_mid, reply_uname)`、`start_live`、`stop_live`
 - **catbus 的对应**（不直观的几处）
   - `item related` 取 `get_video_detail` 返回的 `Related`；`item search --type article` 是 `search_type(search_type='article')`。
-  - 评论区类型按参数识别：稿件 1、专栏（cv 号）12、动态 17。动态只对纯文字和转发动态成立：图文动态的评论区是 type 11 + 相簿 rid，专栏动态是 type 12 + cv 号，从动态 ID 换过去要动态详情接口，上游没有，所以 `comment list / add / delete` 标 ◐。
+  - 评论区类型：稿件 1、专栏（cv 号）12、纯文字 / 转发动态 17。`comment list` / `replies` 还通过非上游 `GET /x/polymer/web-dynamic/v1/detail?id=<动态 ID>&features=itemOpusStyle`（`api.dynamicDetail`）解析图文动态：取 `basic.comment_type=11`、`comment_id_str` 作为相簿评论区类型与 oid，输出 `item_id` 保留动态 ID。一个命令的翻页复用解析结果，不写入凭证。`comment add` / `delete` 保留原范围，不支持图文动态。
+  - `comment replies` 是非上游请求：截至 2026-10-20，BilibiliApis 最新仍为基线 `0234d81`，`get_replies` 只读主评论；按 CONTRIBUTING 4.2 补充 `GET /x/v2/reply/reply`（`api.replyReplies`），视频用 `type=1`、`oid=aid`，专栏用 `type=12`、`oid=cv 号的数字`，图文动态用 `type=11`、`oid=相簿 ID`；其余为 `root=根评论 ID`、`pn=页码`、`ps=10`，Referer 为对应视频、专栏或 opus 页。按响应 `page.count` / `size` 翻页，直接父 ID 取 `parent`。视频、专栏前两页及图文动态单页已只读验证；纯文字和转发动态的楼中楼尚未验证，不开放。非上游请求用假数据命令与 CLI 测试覆盖，没有对应上游方法可供对拍，`UPSTREAM` 基线不变。
   - `item subtitles` 用 `get_player_info` 返回的 `subtitle.subtitles[].subtitle_url` 下载字幕 JSON；上游的 `get_subtitle_view` 返回 protobuf，没有用。
   - `folder items` 是非上游的：上游没有收藏夹内容接口，按网页端补的 `x/v3/fav/resource/list`（`api.favResources`），没有对拍。`item uncollect` 不带 `--folder` 时，用 `get_fav_folders` 多带 `type=2&rid=<aid>` 的请求（非上游，`api.favFoldersOf`）按 `fav_state` 找收着它的收藏夹，没有 `fav_state` 时从全部收藏夹移出。
   - `article publish`：上游的 `save_article_draft` / `submit_article` 把 `banner_url` 固定为空串，没有专栏封面，所以没有 `--cover`。

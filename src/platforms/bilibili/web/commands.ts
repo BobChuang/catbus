@@ -19,7 +19,7 @@ import { CANVAS_1 } from './gaia.js'
 import * as geetest from './geetest.js'
 import * as norm from './normalize.js'
 import { COOKIE_DOMAIN, PROFILE } from './profile.js'
-import { DYNAMIC_REPLY_HINT, type ReplyTarget, resolveDynamic, resolveFolder, resolveItem, resolveReplyTarget, resolveRoom, resolveUser } from './resolve.js'
+import { DYNAMIC_REPLY_HINT, READ_DYNAMIC_REPLY_HINT, type ReadReplyTarget, resolveDynamic, resolveFolder, resolveItem, resolveReadReplyTarget, resolveReplyTarget, resolveRoom, resolveUser } from './resolve.js'
 import { encryptPassword } from './sign.js'
 import { uploadVideo } from './upos.js'
 
@@ -381,32 +381,57 @@ export async function itemSubtitles(ctx: Ctx): Promise<Subtitle[]> {
 /** 评论排序 → 上游 get_replies 的 mode：3 热门、2 时间。 */
 const REPLY_MODE: Record<string, number> = { popular: 3, latest: 2 }
 
-/** 动态评论区的业务错误带上 DYNAMIC_REPLY_HINT：图文动态不在 type 17 下，常见的是 12002 或者取到空列表。 */
-async function onReplies<T>(t: ReplyTarget, run: () => Promise<T>): Promise<T> {
+/** 动态评论区的业务错误带上解析范围的说明；写操作默认仍只支持纯文字和转发。 */
+async function onReplies<T>(t: ReadReplyTarget, run: () => Promise<T>, hint = DYNAMIC_REPLY_HINT): Promise<T> {
   try {
     return await run()
   } catch (err) {
-    if (t.type === 17 && err instanceof CatbusError && err.code === 'UPSTREAM') {
-      throw new CatbusError('UPSTREAM', err.message, { hint: err.hint ?? DYNAMIC_REPLY_HINT, detail: err.detail })
+    if ((t.type === 17 || t.type === 11) && err instanceof CatbusError && err.code === 'UPSTREAM') {
+      throw new CatbusError('UPSTREAM', err.message, { hint: err.hint ?? hint, detail: err.detail })
     }
     throw err
   }
 }
 
-/** 评论区按参数形态识别：稿件 1、专栏 12、动态 17（见 resolveReplyTarget）。 */
+// core 翻页会复制 ctx，但 args 在本次命令内共享；缓存只随 args 存活，不写入登录凭证。
+const readReplyTargets = new WeakMap<Ctx['args'], Promise<ReadReplyTarget>>()
+function readReplyTarget(b: Bili, ctx: Ctx): Promise<ReadReplyTarget> {
+  let target = readReplyTargets.get(ctx.args)
+  if (!target) {
+    target = resolveReplyTarget(b, ctx.args.item!).then((t) => onReplies(t, () => resolveReadReplyTarget(b, t), READ_DYNAMIC_REPLY_HINT))
+    readReplyTargets.set(ctx.args, target)
+  }
+  return target
+}
+
+/** 评论区：稿件 1、专栏 12、纯文字 / 转发动态 17、图文动态相簿 11。 */
 export async function commentList(ctx: Ctx) {
   const b = await bili(ctx)
-  const t = await resolveReplyTarget(b, ctx.args.item!)
+  const t = await readReplyTarget(b, ctx)
   // 游标是 `<上一页的 cursor.pagination_reply.next_offset>~<页序号>`，首页为空（见 api.replies）。
   // 热门评论的 next_offset 常常连着几页不变（进度记在服务端的 session 里，同一个 offset 再请求就是下一页），
   // 带上页序号，免得 core 把它当成游标没变而停止翻页
   const [offset = '', seq = '0'] = (ctx.cursor ?? '').split('~')
   const first = offset === ''
-  const d = await onReplies(t, () => api.replies(b, t.oid, t.type, offset, REPLY_MODE[(ctx.options.sort as string) ?? 'popular'] ?? 3))
+  const d = await onReplies(t, () => api.replies(b, t.oid, t.type, offset, REPLY_MODE[(ctx.options.sort as string) ?? 'popular'] ?? 3), READ_DYNAMIC_REPLY_HINT)
   const list = [...(first ? (d.top_replies ?? []) : []), ...(d.replies ?? [])].map((r: any) => norm.reply(r, t.itemId))
-  if (t.type === 17 && first && !list.length) ctx.log.info(`动态 ${t.oid} 的评论区是空的。${DYNAMIC_REPLY_HINT}`)
+  if (t.type === 17 && first && !list.length) ctx.log.info(`动态 ${t.oid} 的评论区是空的。${READ_DYNAMIC_REPLY_HINT}`)
   const next: string | undefined = d.cursor?.pagination_reply?.next_offset || undefined
   return paged(list, next && `${next}~${Number(seq) + 1}`, !d.cursor?.is_end && list.length > 0 && next != null)
+}
+
+/** 视频、专栏、图文动态根评论下的可见楼中楼；页内截断由 core 的 #skip 续读。 */
+export async function commentReplies(ctx: Ctx) {
+  const root = ctx.args.comment!
+  if (!/^\d+$/.test(root)) throw new CatbusError('USAGE', '根评论 ID 是数字', { hint: '传 comment list 输出的根评论 id' })
+  const pn = Number(ctx.cursor ?? 1)
+  if (!Number.isSafeInteger(pn) || pn < 1) throw new CatbusError('USAGE', '楼中楼分页游标无效', { hint: '原样传入上次返回的 page.cursor' })
+  const b = await bili(ctx)
+  const t = await readReplyTarget(b, ctx)
+  if (t.type === 17) throw new CatbusError('UNSUPPORTED', 'comment replies 尚不支持这种动态的楼中楼', { hint: '动态仅验证图文类型；纯文字和转发动态的楼中楼尚未验证' })
+  const d = await api.replyReplies(b, t.itemId, t.oid, root, pn, t.type)
+  const list = (d.replies ?? []).map((r: any) => norm.reply(r, t.itemId))
+  return paged(list, pn + 1, list.length > 0 && pn * Number(d.page?.size ?? 10) < Number(d.page?.count ?? 0))
 }
 
 /** 回复楼中楼：--root 给根评论、--reply-to 给被回复的那条；只给 --reply-to 时它就是根评论（上游 add_reply 的 root / parent）。 */
