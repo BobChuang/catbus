@@ -20,6 +20,22 @@
 - 新增 `12306` 离线单元测试与在线 E2E 测试
 - 新增 `docs/platforms/12306.md`，更新能力矩阵（`docs/capabilities.md`）、Agent 技能与多语言 README
 
+### Fixed
+
+- 小红书：扫码登录确认后 471（antiSpam）——登录链补 X25519 客户端公钥与 ssk 解密（App 9.43.1 协议，原语同上游 Spider_XHS）
+- 小红书：发布笔记 -9059 参数错误——body 对齐 2026-10-17 现网 schema（视频 business_binds 去 coProduceBind、copyable 按类型）
+- 小红书：可见范围映射勘误（浏览器下拉实测）：`--private` 对应 `privacy_info.type=1`（0=公开、1=仅自己可见、2=仅互关好友）
+- 抖音：图文/视频发布空描述时 text_extra 补尾部分隔符，对齐网页端
+
+### Changed
+
+- 小红书：指纹族刷新到 2026-10-17 现网（webBuild 6.57.6 / Chrome 155），b1 与浏览器逐字节对齐（PC 1784 / 创作者 1868 字节），webprofile 参考档案按 82 字段实测重建
+- 小红书：461/471 风控支持 App 扫码验证链（verifytype 124），qr/init 前自动重跑安全引导
+- 抖音：passport SDK 版本族升到现网（jssdk 3.4.9 / p_ui 2.4.10 / p_zt 3.3.30 / p_ver 1.1.4-beta.5 / p_ca_real 1.0.0.938），UA Chrome/155
+- 抖音：dtrait 内层 blob 与真实设备逐字节对齐（176 字节）；msToken 184 字节的差距由 TLS ClientHello 版本决定，curl_cffi 体系内为已知限制
+- 抖音：Cookie 头按浏览器 wire 顺序序列化（45 键线序），安全 SDK cookie 与 web_sign_token 补齐收集
+- 抖音：创作者域 msToken 独立轮换通道（ms_appid=2906，与主站分开）
+
 ## [0.1.0] - 2026-10-06
 
 首个版本。
