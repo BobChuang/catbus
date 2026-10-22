@@ -6,6 +6,10 @@
 
 ## [Unreleased]
 
+（暂无）
+
+## [0.2.0] - 2026-10-22
+
 ### Added
 
 - bilibili：`feed list --kind following`，关注的人的视频投稿（动态流 `x/polymer/web-dynamic/v1/feed/all`，`type=video`），游标是接口返回的 `offset`；需要登录。上游没有这个接口，请求按网页端动态页补，没有对拍
