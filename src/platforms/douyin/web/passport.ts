@@ -86,11 +86,11 @@ const HEADER_ORDER_QR = [
 ]
 
 const PASSPORT_SDK: [string, string][] = [
-  ['passport_jssdk_version', '3.4.4'],
+  ['passport_jssdk_version', '3.4.9'],
   ['passport_jssdk_type', 'normal'],
   ['is_from_ttaccountsdk', '1'],
 ]
-const SDK_TAIL = { p_ui: '2.4.4', p_ca: '4.0.26', p_ca_real: '1.0.0.892', account_sdk_source: 'web', p_js_v: '3.4.4', p_js_t: 'pro', p_zt: '3.3.17', p_ver: '1.1.3', p_ver_real: '0', p_bd: '1.0.1.19-fix.01' }
+const SDK_TAIL = { p_ui: '2.4.10', p_ca: '4.0.26', p_ca_real: '1.0.0.938', account_sdk_source: 'web', p_js_v: '3.4.9', p_js_t: 'pro', p_zt: '3.3.30', p_ver: '1.1.4-beta.5', p_ver_real: '0', p_bd: '1.0.1.19-fix.01' }
 const MIX_ALPHABET = '1234567890qwertyuiopasdfghjklzxcvbnm'
 const POLL_INTERVAL = 5200
 const QR_TTL = 55_000
@@ -206,11 +206,24 @@ export class Passport {
     this.setdefault('stream_recommend_feed_params', quote(jsonDumps(jsonDumps(feed, { separators: [',', ':'] }), { ensureAscii: false }), ''))
     this.setdefault('__security_mc_1_s_sdk_crypt_sdk', `${rand.hex(4)}-${rand.hex(2)}-${rand.hex(2)}`)
     this.setdefault('bd_ticket_guard_regenerate_keys_time', shanghai(rand.now(), 'keys'))
+    // 上游 0b96881（2026-10-18）：安全 SDK / UI 状态 cookie 补齐——服务端只校验存在性。
     if (!this.get('fpk2')) this.d.setCookie('fpk2', md5Hex(PROFILE.ua))
     if (!this.get('fpk1')) this.d.setCookie('fpk1', fpk1())
     if (this.get('passport_auth_mix_state') === undefined) this.d.setCookie('passport_auth_mix_state', mixState(48))
     this.setdefault('gulu_source_res', Buffer.from(compactJson({ p_in: rand.hex(32) })).toString('base64'))
     this.setdefault('sdk_source_info', passportEncrypt(compactJson(probe(this.browserT('cookie')))))
+  }
+
+  /** fresh 登录态的落地页前置状态（上游 perepare_auth：安全 SDK 与 UI cookie 仅校验存在性）。 */
+  private prepareAuthCookies(): void {
+    this.setdefault('__security_server_data_status', '1')
+    this.setdefault('__security_mc_1_s_sdk_cert_key', rand.uuid4().replaceAll('-', '').slice(0, 18))
+    this.setdefault('__security_mc_1_s_sdk_sign_data_key_web_protect', rand.uuid4().replaceAll('-', '').slice(0, 18))
+    this.setdefault('_bd_ticket_crypt_doamin', '2')
+    this.setdefault('csrf_session_id', rand.hex(16))
+    this.setdefault('SEARCH_RESULT_LIST_TYPE', JSON.stringify('single'))
+    this.setdefault('live_use_vvc', JSON.stringify('false'))
+    this.setdefault('publish_badge_show_info', '0,0,0,0')
   }
 
   /** 页面 acrawler 生成 __ac_signature（上游 _apply_ac_signature，在子进程里跑上游的 run_ac_node.js）。 */
@@ -372,6 +385,28 @@ export class Passport {
         ['sec-fetch-mode', 'navigate'],
         ['sec-fetch-site', 'none'],
         ['sec-fetch-user', '?1'],
+        ['referer', `${WWW}/?recommend=1`],
+      ],
+      timeout: 20,
+    })
+    await res.arrayBuffer().catch(() => {})
+  }
+
+  /**
+   * 带完整 cookie jar 访问 /jingxuan，收集 web_sign_token 与完整 UIFID。
+   *
+   * 2026-10-18 无痕实证（上游 3bbf9a7）：web_sign_token 是 douyin.com HTML 响应的
+   * Set-Cookie（HS256 JWT，含 device id），不是 JS 铸的；仅在游客态下发。
+   */
+  async collectWebSignToken(): Promise<void> {
+    if (this.d.cookie('web_sign_token') && this.d.cookie('UIFID')) return
+    const res = await this.d.request({
+      url: `${WWW}/jingxuan`,
+      headers: [
+        ['user-agent', PROFILE.ua],
+        ['accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'],
+        ['accept-language', 'zh-CN,zh;q=0.9'],
+        ['cookie', this.d.cookieStr],
         ['referer', `${WWW}/?recommend=1`],
       ],
       timeout: 20,
@@ -541,6 +576,7 @@ export class Passport {
     this.strict = strict
     const d = this.d
     d.setDefault('s_v_web_id', svWebId)
+    this.prepareAuthCookies()
     const prv = generateEcKey()
     d.device.private_key = prv
     d.setCookie('bd_ticket_guard_client_data', clientDataCookie(prv))
@@ -561,6 +597,8 @@ export class Passport {
     this.setdefault('biz_trace_id', rand.hex(4))
     this.addPageCookies()
     await this.applyAcSignature()
+    // 上游 3bbf9a7：带完整 jar 二次访问 /jingxuan，收集 web_sign_token（游客态）与完整 UIFID。
+    // 时机在 get_client_cert 之后（上游 auth.py 的 from_cookie / golden 请求序）。
     if (strict) {
       for (const name of ['UIFID_TEMP', 'odin_tt']) {
         if (!this.get(name)) throw new CatbusError('RISK_CONTROL', `短信登录要求登录页下发 ${name}`, { detail: { kind: 'blocked' } })
@@ -583,6 +621,11 @@ export class Passport {
     await this.step(strict, 'challenge', async () => (await this.challenge())?.message === 'success')
     if (strict && !this.get('bit_env')) throw new CatbusError('RISK_CONTROL', 'challenge 没有下发 passportiv，无法生成 bit_env', { detail: { kind: 'blocked' } })
     await this.step(strict, 'client_data_v2', () => this.addClientDataV2())
+    try {
+      await this.collectWebSignToken()
+    } catch (err) {
+      d.ctx.log.debug(`收集 web_sign_token 失败：${(err as Error).message}`)
+    }
   }
 
   private async step(strict: boolean, name: string, fn: () => Promise<boolean>): Promise<void> {
@@ -1166,6 +1209,8 @@ export function applyTicketGuard(d: Douyin, res: HttpResponse): boolean {
     const info = jsonLoads(Buffer.from(decodeURIComponent(raw), 'base64').toString('utf8'))
     if (!info.ticket) return false
     Object.assign(d.tokens, { ticket: info.ticket, ts_sign: info.ts_sign ?? '', client_cert: info.client_cert ?? '' })
+    // 上游 2ecf6d4：cookie 里的 bd_ticket_guard_ts_sign_id 就是 ts_sign 完整值，登录后同步进 jar
+    if (info.ts_sign) d.setCookie('bd_ticket_guard_ts_sign_id', info.ts_sign)
     return true
   } catch {
     return false

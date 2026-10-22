@@ -8,7 +8,7 @@ import { authError, isGuest, scope } from '../../../core/toolkit.js'
 import * as api from './api.js'
 import { type DtraitMaterial, ecdhKey, reeKey, sessionDtrait, ticketClientData, ticketGuardVersion } from './crypto.js'
 import { buildBlob, DTRAIT_BROKEN, DTRAIT_HINT, defaultProfile } from './dtrait.js'
-import { BROWSER, type Headers, WWW, WWW_ONLY } from './profile.js'
+import { BROWSER, BROWSER_COOKIE_ORDER, PROFILE, type Headers, WWW, WWW_ONLY } from './profile.js'
 import { ABogus, fakeWebid, md5Hex, randomMsToken, svWebId, XBogus } from './sign.js'
 
 /**
@@ -97,10 +97,49 @@ export class Douyin {
   }
 
   /** 上游 cookie_str：全部 cookie，不分域。 */
+  /** Cookie 头：按浏览器 wire 顺序（BROWSER_COOKIE_ORDER）排列，其余按 jar 插入序。 */
   get cookieStr(): string {
-    return this.cookies()
-      .map(([k, v]) => `${k}=${v}`)
-      .join('; ')
+    const pairs = this.cookies()
+    const rank = new Map(BROWSER_COOKIE_ORDER.map((n, i) => [n, i] as const))
+    const known = pairs
+      .filter(([k]) => rank.has(k))
+      .sort((a, b) => rank.get(a[0])! - rank.get(b[0])!)
+    const rest = pairs.filter(([k]) => !rank.has(k))
+    return [...known, ...rest].map(([k, v]) => `${k}=${v}`).join('; ')
+  }
+
+  creatorCookieStr(): string {
+    type Entry = { name: string; value: string; domain: string }
+    const all: Entry[] = [
+      ...this.jar.filter((c) => !WWW_ONLY.has(c.name)).map((c) => ({ name: c.name, value: c.value, domain: ROOT_DOMAIN })),
+      ...this.creatorJar.map((c) => ({ name: c.name, value: c.value, domain: c.domain })),
+    ]
+    const used = new Set<number>()
+    const out: Entry[] = []
+    const take = (name: string, pred: (c: Entry) => boolean) => {
+      const i = all.findIndex((c, k) => !used.has(k) && c.name === name && pred(c))
+      if (i >= 0) {
+        used.add(i)
+        out.push(all[i]!)
+      }
+    }
+    const hostOnly = (c: Entry) => c.domain === CREATOR_HOST
+    const creatorDomain = (c: Entry) => c.domain.replace(/^\./, '') === CREATOR_HOST
+    const shared = (c: Entry) => c.domain === ROOT_DOMAIN
+    take('gd_random', hostOnly)
+    take('x-web-secsdk-uid', hostOnly)
+    take('gfkadpd', creatorDomain)
+    take('_tea_utm_cache_2906', creatorDomain)
+    take('csrf_session_id', hostOnly)
+    take('bd_ticket_guard_client_web_domain', shared)
+    take('s_v_web_id', hostOnly)
+    take('s_v_web_id', shared)
+    take('bd_ticket_guard_client_data', shared)
+    for (const [name] of this.cookies()) take(name, shared)
+    all.forEach((c, k) => {
+      if (!used.has(k)) out.push(c)
+    })
+    return out.map((c) => `${c.name}=${c.value}`).join('; ')
   }
 
   /**
@@ -167,6 +206,55 @@ export class Douyin {
   async init(): Promise<void> {
     this.deleteCookie('msToken')
     this.setDefault('s_v_web_id', svWebId)
+    // 上游 2834d77：perepare_auth 会把导入的 cookie jar 按 BROWSER_COOKIE_ORDER
+    // 重排（已知键按序在前，其余保持相对顺序续后）。TS 的 jar 同样是插入序，
+    // 在合成新 cookie 之前先重排，保证后续追加的合成键落在末尾——与 golden 一致。
+    const rank = new Map(BROWSER_COOKIE_ORDER.map((n, i) => [n, i] as const))
+    const jar = this.jar
+    const known = jar.filter((c) => rank.has(c.name)).sort((a, b) => rank.get(a.name)! - rank.get(b.name)!)
+    const rest = jar.filter((c) => !rank.has(c.name))
+    jar.splice(0, jar.length, ...known, ...rest)
+    // 上游 0b96881/0a39462（2026-10-18）：安全 SDK / UI 状态 cookie 补齐，
+    // 与 perepare_auth 对齐——服务端只校验存在性，缺则合成默认值（追加在末尾）。
+    // cookie 导入路径（golden 的 logged 会话）不跑 passport bootstrap，在此补齐。
+    const sync = (name: string, value: () => string): void => {
+      const v = this.cookie(name)
+      if (v == null || v === '') this.setCookie(name, value())
+    }
+    // 随机消耗顺序与上游 perepare_auth 对齐：server_data_status → cert_key →
+    // sign_data_key → _bd_ticket_crypt_doamin → csrf_session_id → UI 状态。
+    sync('__security_server_data_status', () => '1')
+    sync('__security_mc_1_s_sdk_cert_key', () => rand.uuid4().replaceAll('-', '').slice(0, 18))
+    sync('__security_mc_1_s_sdk_sign_data_key_web_protect', () => rand.uuid4().replaceAll('-', '').slice(0, 18))
+    sync('_bd_ticket_crypt_doamin', () => '2')
+    sync('csrf_session_id', () => rand.hex(16))
+    sync('SEARCH_RESULT_LIST_TYPE', () => '"single"')
+    sync('live_use_vvc', () => '"false"')
+    sync('publish_badge_show_info', () => '0,0,0,0')
+    // 上游 2ecf6d4：ts_sign 同步进 bd_ticket_guard_ts_sign_id（cookie 里可能只有短值）
+    const tsSign = this.tokens.ts_sign as string | undefined
+    if (tsSign) this.setCookie('bd_ticket_guard_ts_sign_id', tsSign)
+    // 上游 3bbf9a7：仅 from_cookie（cookie 导入）路径收集——带完整 jar 访问
+    // /jingxuan 拿 web_sign_token 与完整 UIFID。游客 bootstrap 不发这个请求。
+    if (this.credential.method === 'cookie' && (!this.cookie('web_sign_token') || !this.cookie('UIFID'))) {
+      try {
+        const res = await this.plain({
+          method: 'GET',
+          url: 'https://www.douyin.com/jingxuan',
+          headers: [
+            ['user-agent', PROFILE.ua],
+            ['accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'],
+            ['accept-language', 'zh-CN,zh;q=0.9'],
+            ['cookie', this.cookieStr],
+            ['referer', 'https://www.douyin.com/?recommend=1'],
+          ],
+          timeout: 20,
+        })
+        await res.arrayBuffer().catch(() => {})
+      } catch {
+        /* 离线 / 风控：与上游一致静默跳过 */
+      }
+    }
     if (isGuest(this.ctx) && !this.cookie('ttwid')) {
       const ttwid = await api.registerTtwid(this).catch((err) => {
         this.ctx.log.debug(`注册 ttwid 失败：${(err as Error).message}`)
@@ -190,6 +278,22 @@ export class Douyin {
 
   setMsToken(value: string): void {
     if (value) this.tokens.msToken = { value, at: rand.now() }
+  }
+
+  /**
+   * creator.douyin.com 域的 msToken（ms_appid=2906 独立轮换，上游 DouyinAuth.creator_msToken，
+   * commit 1ac437c）。浏览器 creator 页的 mssdk 轮换与主站 6383 分开；create_v2 等
+   * creator 域接口必须带这个版本。
+   */
+  async creatorMsToken(): Promise<string> {
+    const cached = this.tokens.creatorMsToken as { value: string, at: number } | undefined
+    if (cached?.value && rand.now() - cached.at < MS_TTL) return cached.value
+    const token = await api.mstoken(this, cached?.value ?? '', true).catch(() => '')
+    if (token) {
+      this.tokens.creatorMsToken = { value: token, at: rand.now() }
+      return token
+    }
+    return cached?.value || this.msToken()
   }
 
   /** 真实设备号：query/user 的 id，退而求其次抓页面里的 user_unique_id（上游 DouyinAuth.webid）。 */
@@ -258,7 +362,7 @@ export class Douyin {
     if (this.ecdh.has(key)) return this.ecdh.get(key)!
     let out: Buffer | null = null
     try {
-      const cert = await api.serverCert(this, aid, this.cookieStr, origin)
+      const cert = await api.serverCert(this, aid, origin === CREATOR_HOST ? this.creatorCookieStr() : this.cookieStr, origin)
       out = ecdhKey(prv, cert)
     } catch (err) {
       this.ctx.log.debug(`取服务端证书失败，回退 ECDSA：${(err as Error).message}`)

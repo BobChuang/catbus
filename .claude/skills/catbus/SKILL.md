@@ -98,3 +98,34 @@ stdout 恰好一个信封（`-o jsonl` 时每行一条 `data`，摘要信封在 
 4. **不主动联系真人**：不给别人发私信、评论、@、关注，除非用户给出了对象和内容。不批量发送。
 5. **风控就停**：`RISK_CONTROL` 不要循环重试，连续请求同一平台时留出间隔，不并发。
 6. **照实汇报**：结果为空、字段为 null、命令不支持，都照实告诉用户，不编造数据。
+
+## xhs 461/471 风控验证（verifytype 124）移植注意（2026-10-17）
+
+- `redcaptcha/v2/qr/init` **只认刚出炉的安全引导**：必须先用 XHSLoginApi 对当前会话重跑
+  `scripting/seccallback→activate→webprofile`（websectiga 换新、fe-login 上下文）再 init，
+  用登录时的旧引导态会被 40001「为了保护账号安全」拒。**b1 没失效**，服务端校验的是引导
+  动作的时效（防重放）。上游 `risk_qr_verify`（xhs_pc_apis.py）已内置该重引导。
+- 状态机：`qr/status/query` 的 data.status：1=INIT 2=SCAN 3=CANCEL 4=CONFIRM 5=EXPIRE 6=FAIL；
+  4 之后重试原请求即可。
+- verifyBiz：461=antiSpider（业务接口）、471=antiSpam（登录链），验证机制完全共用。
+- 二维码内容：`https://www.xiaohongshu.com/web-login/qrcode-transfer?rid=<rid>&verifyUuid=<uuid>&verifyType=124`，约 1 分钟过期，过期重 init 换码即可。
+
+## douyin 发布链风控层级（2026-10-17 实测逆向，上游 DouYin_Spider）
+
+发布 `create_v2` 可能遇到三层风控，逐层递进（`x-tt-verify-passport-decision` 响应头判断）：
+
+1. **`verify_reason=gateway_biz_verify`**（会话信任不足）→ verify_ways 含 `qr_code_verify`。
+   修复：`get_qrcode?aid=6383&scene=secondary_verify&verify_scene=creator` → App 扫码 →
+   `check_qrconnect` status=confirmed。**aid 必须 6383**（2906 回 4031）。
+2. **`verify_reason=gateway_web_authlv_check`**（认证等级不足）→ 要求短信/人脸/密码。
+   QR 不够；SMS 发码（POST /passport/web/send_code/ type=22）在纯 HTTP 会话下回
+   error_code=16「该应用无权限」——authlv 需要浏览器上下文或 App 内提升。
+3. Cookie 集合差异：浏览器有 13 个信任 cookie（`__security_mc_*` 系列、`d_ticket`、
+   `store-region` 等）是长期使用积累，fresh QR 会话结构性无法获得 → cookie 导入
+   （catbus `auth login --method cookie`）是绕开 1/2 的实际路径。
+
+其他已固化对齐项（勿回退）：
+- dtrait 内层 blob 与真实设备逐字节一致（176B）；指纹/UA 全 Chrome 155。
+- Cookie 头顺序按浏览器 wire 序（上游 DouyinAuth.BROWSER_COOKIE_ORDER）。
+- creator 域 msToken 独立通道（ms_appid=2906；184 长度版本由 TLS/JA3 决定，
+  curl_cffi chrome150 拿到 164——服务端按 ClientHello 版本发不同长度 token）。

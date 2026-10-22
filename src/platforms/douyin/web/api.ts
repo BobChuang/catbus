@@ -83,7 +83,7 @@ export async function csrfToken(d: Douyin, cookieStr: string, origin = WWW, path
       cookies: cookieObject(cookieStr),
     })
     const parts = (res.headers.get('x-ware-csrf-token') ?? '').split(',')
-    return parts.length > 4 ? parts[1]! : null
+    return parts.length > 1 ? parts[1]! : null
   } catch {
     return null
   }
@@ -164,10 +164,11 @@ function msTokenOf(res: { headers: { get(n: string): string | null } }): string 
   return /msToken=([^;]+)/.exec(res.headers.get('set-cookie') ?? '')?.[1] ?? ''
 }
 
-/** mssdk /web/r/token 换 msToken；续期时把旧 token 挂在 query 上（上游 utils/mstoken.get_mstoken）。 */
-export async function mstoken(d: Douyin, previous = ''): Promise<string> {
+/** mssdk /web/r/token 换 msToken；续期时把旧 token 挂在 query 上（上游 utils/mstoken.get_mstoken）。
+ * creator=true 走 ms_appid=2906（creator.douyin.com 专用轮换，上游 1ac437c），与主站 6383 缓存分开。 */
+export async function mstoken(d: Douyin, previous = '', creator = false): Promise<string> {
   const body = strDataReport()
-  let url = 'https://mssdk.bytedance.com/web/r/token?ms_appid=6383'
+  let url = `https://mssdk.bytedance.com/web/r/token?ms_appid=${creator ? '2906' : '6383'}`
   if (previous) url += '&msToken=' + quote(previous, '')
   const res = await d.plain({ method: 'POST', url, headers: mssdkHeaders(), body, timeout: 25 })
   return msTokenOf(res)

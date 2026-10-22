@@ -87,7 +87,7 @@ export function murmur3(s: string, seed = 0): number {
 }
 
 /** 直接当特征串用的字段（上游对它们直接取 murmur3，必须是字符串）。 */
-const STRING_FIELDS = ['ua', 'notification_permission', 'hook_score']
+const STRING_FIELDS = ['ua', 'notification_permission']
 /** 用逗号拼接的字符串列表。 */
 const LIST_FIELDS = ['languages', 'str16_list', 'str18_list']
 /** 拼进特征串的标量：字符串或数字。 */
@@ -126,7 +126,7 @@ export function computedFeatures(p: Record<string, any>): Record<number, string>
     30: `${p.avail_height},${p.avail_left},${p.avail_top},${p.avail_width}`,
     31: `${p.screen_height},${p.screen_width}`,
     32: `${p.color_depth},${p.pixel_depth},${p.device_pixel_ratio}`,
-    34: p.hook_score,
+    ...(p.hook_score == null ? {} : { 34: p.hook_score }),
   }
 }
 
@@ -169,7 +169,7 @@ export function buildBlob(profile: unknown, accessType = 0): string {
   for (const [n, v] of bools) if (typeof v !== 'boolean') invalid(`bools 的 ${n} 要是 true / false`)
   const values = indexed(profile, 'render_hashes')
   checkFields(profile)
-  for (const [n, s] of Object.entries(computedFeatures(profile))) values.set(Number(n), murmur3(s))
+  for (const [n, s] of Object.entries(computedFeatures(profile))) values.set(Number(n), murmur3(String(s)))
   const body = Buffer.alloc(34 * 5)
   for (let n = 1; n <= 34; n++) {
     const v = values.get(n)

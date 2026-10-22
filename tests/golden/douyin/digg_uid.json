@@ -16,6 +16,112 @@
   "now": 1790000000123,
   "requests": [
     {
+      "method": "GET",
+      "url": "https://www.douyin.com/jingxuan",
+      "headers": [
+        [
+          "user-agent",
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36"
+        ],
+        [
+          "accept",
+          "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+        ],
+        [
+          "accept-language",
+          "zh-CN,zh;q=0.9"
+        ],
+        [
+          "referer",
+          "https://www.douyin.com/?recommend=1"
+        ]
+      ],
+      "cookies": [
+        [
+          "bd_ticket_guard_client_web_domain",
+          "2"
+        ],
+        [
+          "__security_server_data_status",
+          "1"
+        ],
+        [
+          "_bd_ticket_crypt_doamin",
+          "2"
+        ],
+        [
+          "SEARCH_RESULT_LIST_TYPE",
+          "\"single\""
+        ],
+        [
+          "live_use_vvc",
+          "\"false\""
+        ],
+        [
+          "passport_csrf_token",
+          "fakecsrf0123456789abcdef01234567"
+        ],
+        [
+          "passport_csrf_token_default",
+          "fakecsrf0123456789abcdef01234567"
+        ],
+        [
+          "UIFID",
+          "fake-uifid-0123456789abcdef"
+        ],
+        [
+          "uid_tt",
+          "fake-uid-tt"
+        ],
+        [
+          "sessionid",
+          "fake-sessionid"
+        ],
+        [
+          "sessionid_ss",
+          "fake-sessionid"
+        ],
+        [
+          "bd_ticket_guard_ts_sign_id",
+          "ts.2.fakesign0123456789abcdef"
+        ],
+        [
+          "__security_mc_1_s_sdk_cert_key",
+          "94514d146fbb41f392"
+        ],
+        [
+          "__security_mc_1_s_sdk_sign_data_key_web_protect",
+          "3ab028bb5a2c4a089a"
+        ],
+        [
+          "publish_badge_show_info",
+          "0,0,0,0"
+        ],
+        [
+          "sid_guard",
+          "fake-sid-guard"
+        ],
+        [
+          "ttwid",
+          "1%7Cfake-ttwid%7C1790000000%7Cabcdef"
+        ],
+        [
+          "csrf_session_id",
+          "1e43212494c0826bbb4b6b58143104ed"
+        ],
+        [
+          "s_v_web_id",
+          "verify_fakesvwebid_0000_0000_4000_8000_000000000000"
+        ],
+        [
+          "odin_tt",
+          "fake-odin-tt"
+        ]
+      ],
+      "body": null,
+      "multipart": null
+    },
+    {
       "method": "HEAD",
       "url": "https://www.douyin.com/service/2/abtest_config/",
       "headers": [
@@ -29,7 +135,7 @@
         ],
         [
           "user-agent",
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36"
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36"
         ],
         [
           "x-secsdk-csrf-version",
@@ -46,16 +152,24 @@
       ],
       "cookies": [
         [
-          "ttwid",
-          "1%7Cfake-ttwid%7C1790000000%7Cabcdef"
+          "bd_ticket_guard_client_web_domain",
+          "2"
         ],
         [
-          "UIFID",
-          "fake-uifid-0123456789abcdef"
+          "__security_server_data_status",
+          "1"
         ],
         [
-          "s_v_web_id",
-          "verify_fakesvwebid_0000_0000_4000_8000_000000000000"
+          "_bd_ticket_crypt_doamin",
+          "2"
+        ],
+        [
+          "SEARCH_RESULT_LIST_TYPE",
+          "\"single\""
+        ],
+        [
+          "live_use_vvc",
+          "\"false\""
         ],
         [
           "passport_csrf_token",
@@ -66,8 +180,12 @@
           "fakecsrf0123456789abcdef01234567"
         ],
         [
-          "odin_tt",
-          "fake-odin-tt"
+          "UIFID",
+          "fake-uifid-0123456789abcdef"
+        ],
+        [
+          "uid_tt",
+          "fake-uid-tt"
         ],
         [
           "sessionid",
@@ -78,20 +196,40 @@
           "fake-sessionid"
         ],
         [
+          "bd_ticket_guard_ts_sign_id",
+          "ts.2.fakesign0123456789abcdef"
+        ],
+        [
+          "__security_mc_1_s_sdk_cert_key",
+          "94514d146fbb41f392"
+        ],
+        [
+          "__security_mc_1_s_sdk_sign_data_key_web_protect",
+          "3ab028bb5a2c4a089a"
+        ],
+        [
+          "publish_badge_show_info",
+          "0,0,0,0"
+        ],
+        [
           "sid_guard",
           "fake-sid-guard"
         ],
         [
-          "uid_tt",
-          "fake-uid-tt"
+          "ttwid",
+          "1%7Cfake-ttwid%7C1790000000%7Cabcdef"
         ],
         [
-          "bd_ticket_guard_client_web_domain",
-          "2"
+          "csrf_session_id",
+          "1e43212494c0826bbb4b6b58143104ed"
         ],
         [
-          "bd_ticket_guard_ts_sign_id",
-          "ts.2.fakesign"
+          "s_v_web_id",
+          "verify_fakesvwebid_0000_0000_4000_8000_000000000000"
+        ],
+        [
+          "odin_tt",
+          "fake-odin-tt"
         ]
       ],
       "body": null,
@@ -99,11 +237,11 @@
     },
     {
       "method": "GET",
-      "url": "https://www.douyin.com/aweme/v1/web/query/user/?publish_video_strategy_type=2&device_platform=webapp&aid=6383&channel=channel_pc_web&update_version_code=170400&pc_client_type=1&pc_libra_divert=Windows&support_h265=1&support_dash=1&cpu_core_num=20&version_code=170400&version_name=17.4.0&cookie_enabled=true&screen_width=2560&screen_height=1440&browser_language=zh-CN&browser_platform=Win32&browser_name=Chrome&browser_version=151.0.0.0&browser_online=true&engine_name=Blink&engine_version=151.0.0.0&os_name=Windows&os_version=10&device_memory=32&platform=PC&downlink=10&effective_type=4g&round_trip_time=0&uifid=fake-uifid-0123456789abcdef&webid=7400000000000000001&verifyFp=verify_fakesvwebid_0000_0000_4000_8000_000000000000&fp=verify_fakesvwebid_0000_0000_4000_8000_000000000000&a_bogus=D70fgHy7OdmbCdMb8KiTH5aloh6lrPSyEei%2Fba1l9Ox3LhlYoSNSzNGrbxLWYh2SFYBwhCV72DPAYfncp0t0pe9pLmpvSDvRstAA90mo21wgYzkQgNfpCzsoCJebWQiEm5KyJI4lAtQaIEK4E3aTUdA9CApE4Ovp%2Frrydc4aE9tvgz49PHq%2FuxGdOXFY-b95zE%3D%3D",
+      "url": "https://www.douyin.com/aweme/v1/web/query/user/?publish_video_strategy_type=2&device_platform=webapp&aid=6383&channel=channel_pc_web&update_version_code=170400&pc_client_type=1&pc_libra_divert=Windows&support_h265=1&support_dash=1&cpu_core_num=20&version_code=170400&version_name=17.4.0&cookie_enabled=true&screen_width=2560&screen_height=1440&browser_language=zh-CN&browser_platform=Win32&browser_name=Chrome&browser_version=155.0.0.0&browser_online=true&engine_name=Blink&engine_version=155.0.0.0&os_name=Windows&os_version=10&device_memory=32&platform=PC&downlink=10&effective_type=4g&round_trip_time=0&uifid=fake-uifid-0123456789abcdef&webid=7400000000000000001&verifyFp=verify_fakesvwebid_0000_0000_4000_8000_000000000000&fp=verify_fakesvwebid_0000_0000_4000_8000_000000000000&a_bogus=dJ0VhwW7QZ%2FjcdMbmKO-CValFh6MNBSyhlTKWz%2FUeOxwLqMbxYNWzxGJaxq7YZytMYpih937qnsAYfVcq4tkp9rkqmkDudiR0tAA90sL%2F1whbMvQDHRZCw8L7JeY8mJEuAKfJ14U6tQc2xK4E3rsUp-yeAkEsQJpQqaydcRGi9ekgzG9PrF%2FuNbdxXzGB5I5TE%3D%3D",
       "headers": [
         [
           "user-agent",
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36"
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36"
         ],
         [
           "accept",
@@ -111,7 +249,7 @@
         ],
         [
           "sec-ch-ua",
-          "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\""
+          "\"Google Chrome\";v=\"155\", \"Chromium\";v=\"155\", \"Not(A:Brand\";v=\"24\""
         ],
         [
           "sec-ch-ua-mobile",
@@ -152,12 +290,8 @@
       ],
       "cookies": [
         [
-          "ttwid",
-          "1%7Cfake-ttwid%7C1790000000%7Cabcdef"
-        ],
-        [
-          "UIFID",
-          "fake-uifid-0123456789abcdef"
+          "bd_ticket_guard_client_web_domain",
+          "2"
         ],
         [
           "passport_csrf_token",
@@ -168,8 +302,12 @@
           "fakecsrf0123456789abcdef01234567"
         ],
         [
-          "odin_tt",
-          "fake-odin-tt"
+          "UIFID",
+          "fake-uifid-0123456789abcdef"
+        ],
+        [
+          "uid_tt",
+          "fake-uid-tt"
         ],
         [
           "sessionid",
@@ -180,20 +318,52 @@
           "fake-sessionid"
         ],
         [
+          "bd_ticket_guard_ts_sign_id",
+          "ts.2.fakesign0123456789abcdef"
+        ],
+        [
           "sid_guard",
           "fake-sid-guard"
         ],
         [
-          "uid_tt",
-          "fake-uid-tt"
+          "ttwid",
+          "1%7Cfake-ttwid%7C1790000000%7Cabcdef"
         ],
         [
-          "bd_ticket_guard_client_web_domain",
+          "odin_tt",
+          "fake-odin-tt"
+        ],
+        [
+          "__security_server_data_status",
+          "1"
+        ],
+        [
+          "__security_mc_1_s_sdk_cert_key",
+          "94514d146fbb41f392"
+        ],
+        [
+          "__security_mc_1_s_sdk_sign_data_key_web_protect",
+          "3ab028bb5a2c4a089a"
+        ],
+        [
+          "_bd_ticket_crypt_doamin",
           "2"
         ],
         [
-          "bd_ticket_guard_ts_sign_id",
-          "ts.2.fakesign"
+          "csrf_session_id",
+          "1e43212494c0826bbb4b6b58143104ed"
+        ],
+        [
+          "SEARCH_RESULT_LIST_TYPE",
+          "\"single\""
+        ],
+        [
+          "live_use_vvc",
+          "\"false\""
+        ],
+        [
+          "publish_badge_show_info",
+          "0,0,0,0"
         ],
         [
           "s_v_web_id",
@@ -205,11 +375,11 @@
     },
     {
       "method": "POST",
-      "url": "https://www.douyin.com/aweme/v1/web/commit/item/digg/?device_platform=webapp&aid=6383&channel=channel_pc_web&update_version_code=170400&pc_client_type=1&pc_libra_divert=Windows&support_h265=1&support_dash=1&cpu_core_num=20&version_code=170400&version_name=17.4.0&cookie_enabled=true&screen_width=2560&screen_height=1440&browser_language=zh-CN&browser_platform=Win32&browser_name=Chrome&browser_version=151.0.0.0&browser_online=true&engine_name=Blink&engine_version=151.0.0.0&os_name=Windows&os_version=10&device_memory=32&platform=PC&downlink=10&effective_type=4g&round_trip_time=0&webid=7400000000000000001&uifid=fake-uifid-0123456789abcdef&verifyFp=verify_fakesvwebid_0000_0000_4000_8000_000000000000&fp=verify_fakesvwebid_0000_0000_4000_8000_000000000000&msToken=fake-mstoken-0123456789&a_bogus=mysfDqtiOo8fCdFSYKiiH5ClwhI%2FrBuyRBT2WT5UtONALhlTxYN6zNSJcxo0bh2SMSBThCIH2DTAbfncqU7zpC9pwmpkudkR0tIV9g8L%2F1qgb0iQLNfBCumL9JtG8mkE8%2FKyJIRlItmcId%2F4LpakUBly9ApJsOJp%2FHaRdcRaN9tk6MT9MqqKuPtdTXFbBco52j%3D%3D&uid=9f52dbd72f20d7cf3ecadeaf61233aaf",
+      "url": "https://www.douyin.com/aweme/v1/web/commit/item/digg/?device_platform=webapp&aid=6383&channel=channel_pc_web&update_version_code=170400&pc_client_type=1&pc_libra_divert=Windows&support_h265=1&support_dash=1&cpu_core_num=20&version_code=170400&version_name=17.4.0&cookie_enabled=true&screen_width=2560&screen_height=1440&browser_language=zh-CN&browser_platform=Win32&browser_name=Chrome&browser_version=155.0.0.0&browser_online=true&engine_name=Blink&engine_version=155.0.0.0&os_name=Windows&os_version=10&device_memory=32&platform=PC&downlink=10&effective_type=4g&round_trip_time=0&webid=7400000000000000001&uifid=fake-uifid-0123456789abcdef&verifyFp=verify_fakesvwebid_0000_0000_4000_8000_000000000000&fp=verify_fakesvwebid_0000_0000_4000_8000_000000000000&msToken=fake-mstoken-0123456789&a_bogus=Qj4nDeXjd2AcKdMtmCxrCVcloh6ANPWylFTOWGlU9NELywzY2bPbzNSJcxq7YwLtPSpzhH1HonBMYVdcqstzperkomkvuxJR0zA5900Lg1w6YzvQEqRZCw8LeJeG8OiEY%2FobJ1RlWtmaIEA4g3aTUpl9tAkj4QipOraSdnWGE9tf60s9PqF2uxbDTXFb-cI5kf%3D%3D&uid=9f52dbd72f20d7cf3ecadeaf61233aaf",
       "headers": [
         [
           "user-agent",
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36"
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36"
         ],
         [
           "accept",
@@ -221,7 +391,7 @@
         ],
         [
           "sec-ch-ua",
-          "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\""
+          "\"Google Chrome\";v=\"155\", \"Chromium\";v=\"155\", \"Not(A:Brand\";v=\"24\""
         ],
         [
           "sec-ch-ua-mobile",
@@ -269,7 +439,7 @@
         ],
         [
           "x-tt-session-dtrait",
-          "d0_JbIEXFP5DLNpBnu/pVqsacO9nh9V/PcqV6EXJ7uF+GmfEoicJKjhyfXsNeEbxzM76/6a4zXudQxrKzHvU7wumrRP0CdYuH23DGvCbdzUt8SluL/m93YWLbLXdhoS4/ARMSzsf04LvlY/Q1xIZn9g9CJuTHnPjkCeP40OGl0AOSYLog9+snTeScu/WE3Q81VWdAKP6hdM7yENd4NvcqV1epr+cgVINKAiguaIF2SgEyEpKPiVHn82V0/1RkNggPZKtmmddnixKrqWGwQUZMrfRRdN1eEQoqLuHO5xV5jUA0eDb5jc0j5Q3bAsR+ETGmUZV/tF4yyLyaXK5imnj+/ANA==_OrAou1osCgga08Q1COZy44vCc0v3xsE608W6LasEvAEolej7PGGeZz0xVjG7coPHeV0iz+TZMXrOG7UU5IVxqjaAKrx5kZUJetiuut+e6swaDuWxzK6gwmRqgoa9VQ2HL9hv9GGsXT1MgMXpYZILWBZYp3GpO6lWsciAHAvdGDG0n1dIJMaLn4hAHXpEtgYbCQZoPS06wiP9XloZeH2dWD7FGfiQZtmRbxtOTZKE3P471lL+FZqoGnBO7xoTWmICp62M6YttL1I2Rm9nzMuvhJX18/lthbQNs7uwxz9HcqOqwaAdlCmaxeUodhDCbse4pJnUVfavoP0S5RjwTSNrkQ=="
+          "d0_Dq5u3hzeMEQ5qvRgn1cnp5p2qtJ2EaWsHEiQ5Bsl+rizIVS5DwR56kZkiFjjRn/U8ipslOC14z2QqvS1dLWpx2AR+D1MJGzfPvMh30zQyJm2nI3u6dIbczZN1URxW78mhKw0FT+iEihWSxSfv57UMYB3M8OgWGkjHmMU+7c8CRpV4HwZc55bu7hmXxf0cK1EaXxmFQJi/kB8imPNTofgKzN/PWM9pZuyqqGdBYZ8n+Dhya4ANxJWb0DVQyh3SEPPbHMkdIPxehsjnQg4Ok2+sd3TxHuQw9jXuspNwtlAEKB4LJZnwfXC+rVo/+ZvWc/7OP+UB0LdLUNWNhMe8k1pNw==_7MkmLEt5JZpH+eWVntMUU2kUFqn/7tGFoqAO8mOZv53SR5gHoarbUTvfBcs5h66650cuvqZ8Ouf4/QgTFE7oC6W9gBQ/1swxjeSxEhlrLEQOvG+I67Ixngp0U34gB7DjMNRV3pJYDySBbqFZyfsbcM9+mHJR288XcnefPaPV8JIlLc8J5hcseXlqQH0njv+9oYQWcNokNXxZqhB5aRkn3YdGqpffntvQkMVuY7th7EAQK+AKSMqiAsW5Z0rH7B67mMuO6UgC5fhX+jJ4JFPcRcwvN5CZ7H7vOvxIG8lG+zNX3KQcSFj8owUFhlGTRb2l4rtkMBNmL0ts8j0domA4SQ=="
         ],
         [
           "x-secsdk-csrf-token",
@@ -290,12 +460,8 @@
       ],
       "cookies": [
         [
-          "ttwid",
-          "1%7Cfake-ttwid%7C1790000000%7Cabcdef"
-        ],
-        [
-          "UIFID",
-          "fake-uifid-0123456789abcdef"
+          "bd_ticket_guard_client_web_domain",
+          "2"
         ],
         [
           "passport_csrf_token",
@@ -306,8 +472,12 @@
           "fakecsrf0123456789abcdef01234567"
         ],
         [
-          "odin_tt",
-          "fake-odin-tt"
+          "UIFID",
+          "fake-uifid-0123456789abcdef"
+        ],
+        [
+          "uid_tt",
+          "fake-uid-tt"
         ],
         [
           "sessionid",
@@ -318,20 +488,52 @@
           "fake-sessionid"
         ],
         [
+          "bd_ticket_guard_ts_sign_id",
+          "ts.2.fakesign0123456789abcdef"
+        ],
+        [
           "sid_guard",
           "fake-sid-guard"
         ],
         [
-          "uid_tt",
-          "fake-uid-tt"
+          "ttwid",
+          "1%7Cfake-ttwid%7C1790000000%7Cabcdef"
         ],
         [
-          "bd_ticket_guard_client_web_domain",
+          "odin_tt",
+          "fake-odin-tt"
+        ],
+        [
+          "__security_server_data_status",
+          "1"
+        ],
+        [
+          "__security_mc_1_s_sdk_cert_key",
+          "94514d146fbb41f392"
+        ],
+        [
+          "__security_mc_1_s_sdk_sign_data_key_web_protect",
+          "3ab028bb5a2c4a089a"
+        ],
+        [
+          "_bd_ticket_crypt_doamin",
           "2"
         ],
         [
-          "bd_ticket_guard_ts_sign_id",
-          "ts.2.fakesign"
+          "csrf_session_id",
+          "1e43212494c0826bbb4b6b58143104ed"
+        ],
+        [
+          "SEARCH_RESULT_LIST_TYPE",
+          "\"single\""
+        ],
+        [
+          "live_use_vvc",
+          "\"false\""
+        ],
+        [
+          "publish_badge_show_info",
+          "0,0,0,0"
         ],
         [
           "s_v_web_id",
@@ -343,6 +545,13 @@
     }
   ],
   "responses": [
+    {
+      "status": 200,
+      "headers": {},
+      "body": {
+        "status_code": 0
+      }
+    },
     {
       "status": 200,
       "headers": {

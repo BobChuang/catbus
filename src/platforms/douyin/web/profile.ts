@@ -2,18 +2,18 @@ import type { HeaderPairs } from '../../../core/http.js'
 
 /**
  * 设备画像、请求头与公共 query（上游 utils/fingerprint.py、builder/header.py、builder/params.py）。
- * UA 是 Chrome 151（上游实录）；wreq-js 最新的 TLS 画像是 chrome_149，与上游 curl_cffi 用 chrome150 画像配 151 UA 的做法一致。
+ * UA 是 Chrome 155（2026-10-17 现网实录）；wreq-js 最新的 TLS 画像是 chrome_149，与上游 curl_cffi 用 chrome150 画像配 155 UA 的做法一致（TLS 版本差已记录为已知项）。
  */
 
-const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36'
+const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36'
 
 export const PROFILE = {
   ua: UA,
-  secChUa: '"Not=A?Brand";v="99", "Google Chrome";v="151", "Chromium";v="151"',
+  secChUa: '"Google Chrome";v="155", "Chromium";v="155", "Not(A:Brand";v="24"',
   secChUaPlatform: '"Windows"',
   browserName: 'Chrome',
-  browserVersion: '151.0.0.0',
-  engineVersion: '151.0.0.0',
+  browserVersion: '155.0.0.0',
+  engineVersion: '155.0.0.0',
   platform: 'Win32',
   osVersion: '10',
   cpuCoreNum: '20',
@@ -53,6 +53,29 @@ export const WWW_ONLY = new Set([
   'fpk1',
   'fpk2',
 ])
+
+/**
+ * Chrome 登录态 Cookie 头的发送顺序（2026-10-17 浏览器 create_v2 实录，45 键）。
+ * Chrome 的 Cookie 头顺序由 cookie jar 插入序决定；未列出的键按插入序排在其后。
+ * 对应上游 DouyinAuth.BROWSER_COOKIE_ORDER（commit 09f2812）。
+ */
+export const BROWSER_COOKIE_ORDER = [
+  'bd_ticket_guard_client_web_domain', 'n_mh', 'has_biz_token',
+  '__security_server_data_status', '_bd_ticket_crypt_doamin',
+  'SEARCH_RESULT_LIST_TYPE', 'live_use_vvc', 'store-region',
+  'store-region-src', 'd_ticket', 'is_staff_user', 'enter_pc_once',
+  'hevc_supported', 'passport_csrf_token', 'passport_csrf_token_default',
+  'UIFID', 'uid_tt', 'uid_tt_ss', 'sid_tt', 'sessionid', 'sessionid_ss',
+  'bd_ticket_guard_ts_sign_id', '__security_mc_1_s_sdk_crypt_sdk',
+  '__security_mc_1_s_sdk_cert_key',
+  '__security_mc_1_s_sdk_sign_data_key_web_protect', 'is_dbsc',
+  'is_support_rtm_web_ts', 'stream_recommend_feed_params',
+  'home_can_add_dy_2_desktop', 'strategyABtestKey',
+  'publish_badge_show_info', 'is_dash_user', 'sid_guard',
+  'session_tlb_tag', 'sid_ucp_v1', 'ssid_ucp_v1', 'IsDouyinActive',
+  'x-web-secsdk-uid', 'ttwid', 'csrf_session_id', 's_v_web_id',
+  'odin_tt', 'x_tt_token', 'fpk1', 'fpk2',
+]
 
 // ---------------------------------------------------------------- 请求头
 

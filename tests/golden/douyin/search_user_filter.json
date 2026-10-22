@@ -16,11 +16,117 @@
   "requests": [
     {
       "method": "GET",
-      "url": "https://www.douyin.com/aweme/v1/web/discover/search/?device_platform=webapp&aid=6383&channel=channel_pc_web&search_channel=aweme_user_web&search_filter_value=%7B%22douyin_user_fans%22%3A%5B%221w_10w%22%5D%2C%22douyin_user_type%22%3A%5B%22enterprise_user%22%5D%7D&keyword=%E5%B7%B4%E6%97%A6%E6%9C%A8%E5%85%AC%E4%B8%BB&search_source=normal_search&query_correct_type=1&is_filter_search=1&from_group_id=&disable_rs=0&offset=0&count=25&need_filter_settings=1&list_type=single&pc_search_top_1_params=%7B%22enable_ai_search_top_1%22%3A1%7D&update_version_code=170400&pc_client_type=1&pc_libra_divert=Windows&support_h265=1&support_dash=1&cpu_core_num=20&version_code=170400&version_name=17.4.0&cookie_enabled=true&screen_width=2560&screen_height=1440&browser_language=zh-CN&browser_platform=Win32&browser_name=Chrome&browser_version=151.0.0.0&browser_online=true&engine_name=Blink&engine_version=151.0.0.0&os_name=Windows&os_version=10&device_memory=32&platform=PC&downlink=10&effective_type=4g&round_trip_time=50&webid=7400000000000000001&uifid=fake-uifid-0123456789abcdef&msToken=fake-mstoken-0123456789&a_bogus=xy0RhtXwYZ8jcVKGucisH3Clzh6ArsuyTMi2Wy3lSxqiLZlbouNyzNSraxoWYw9SMbpwhC3H0DTMYjdcqUtTpC9pLmkvuxvR0zAc908L%2F1qhb0vQDqfNCzmL9Jtb8YvEm5oSJAUU1tmc2xA4EZrwUp5yHAkE4OkpKqrSdaUGN9ek6zT9FrqQuNtdxXFb-RI5RE%3D%3D&verifyFp=verify_fakesvwebid_0000_0000_4000_8000_000000000000&fp=verify_fakesvwebid_0000_0000_4000_8000_000000000000",
+      "url": "https://www.douyin.com/jingxuan",
       "headers": [
         [
           "user-agent",
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36"
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36"
+        ],
+        [
+          "accept",
+          "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+        ],
+        [
+          "accept-language",
+          "zh-CN,zh;q=0.9"
+        ],
+        [
+          "referer",
+          "https://www.douyin.com/?recommend=1"
+        ]
+      ],
+      "cookies": [
+        [
+          "bd_ticket_guard_client_web_domain",
+          "2"
+        ],
+        [
+          "__security_server_data_status",
+          "1"
+        ],
+        [
+          "_bd_ticket_crypt_doamin",
+          "2"
+        ],
+        [
+          "SEARCH_RESULT_LIST_TYPE",
+          "\"single\""
+        ],
+        [
+          "live_use_vvc",
+          "\"false\""
+        ],
+        [
+          "passport_csrf_token",
+          "fakecsrf0123456789abcdef01234567"
+        ],
+        [
+          "passport_csrf_token_default",
+          "fakecsrf0123456789abcdef01234567"
+        ],
+        [
+          "UIFID",
+          "fake-uifid-0123456789abcdef"
+        ],
+        [
+          "uid_tt",
+          "fake-uid-tt"
+        ],
+        [
+          "sessionid",
+          "fake-sessionid"
+        ],
+        [
+          "sessionid_ss",
+          "fake-sessionid"
+        ],
+        [
+          "bd_ticket_guard_ts_sign_id",
+          "ts.2.fakesign0123456789abcdef"
+        ],
+        [
+          "__security_mc_1_s_sdk_cert_key",
+          "94514d146fbb41f392"
+        ],
+        [
+          "__security_mc_1_s_sdk_sign_data_key_web_protect",
+          "3ab028bb5a2c4a089a"
+        ],
+        [
+          "publish_badge_show_info",
+          "0,0,0,0"
+        ],
+        [
+          "sid_guard",
+          "fake-sid-guard"
+        ],
+        [
+          "ttwid",
+          "1%7Cfake-ttwid%7C1790000000%7Cabcdef"
+        ],
+        [
+          "csrf_session_id",
+          "1e43212494c0826bbb4b6b58143104ed"
+        ],
+        [
+          "s_v_web_id",
+          "verify_fakesvwebid_0000_0000_4000_8000_000000000000"
+        ],
+        [
+          "odin_tt",
+          "fake-odin-tt"
+        ]
+      ],
+      "body": null,
+      "multipart": null
+    },
+    {
+      "method": "GET",
+      "url": "https://www.douyin.com/aweme/v1/web/discover/search/?device_platform=webapp&aid=6383&channel=channel_pc_web&search_channel=aweme_user_web&search_filter_value=%7B%22douyin_user_fans%22%3A%5B%221w_10w%22%5D%2C%22douyin_user_type%22%3A%5B%22enterprise_user%22%5D%7D&keyword=%E5%B7%B4%E6%97%A6%E6%9C%A8%E5%85%AC%E4%B8%BB&search_source=normal_search&query_correct_type=1&is_filter_search=1&from_group_id=&disable_rs=0&offset=0&count=25&need_filter_settings=1&list_type=single&pc_search_top_1_params=%7B%22enable_ai_search_top_1%22%3A1%7D&update_version_code=170400&pc_client_type=1&pc_libra_divert=Windows&support_h265=1&support_dash=1&cpu_core_num=20&version_code=170400&version_name=17.4.0&cookie_enabled=true&screen_width=2560&screen_height=1440&browser_language=zh-CN&browser_platform=Win32&browser_name=Chrome&browser_version=155.0.0.0&browser_online=true&engine_name=Blink&engine_version=155.0.0.0&os_name=Windows&os_version=10&device_memory=32&platform=PC&downlink=10&effective_type=4g&round_trip_time=50&webid=7400000000000000001&uifid=fake-uifid-0123456789abcdef&msToken=fake-mstoken-0123456789&a_bogus=D6UVhtt7do%2F5OdMbuKx1C5eUoh6ArTSyOli2bc9leNoEyhtYoSNfzxSrnxqLYq6tMupTheV7onB%2FYndcqUtiperkumkvSdkRsTIA9g8Lg1qXYMJQgrRpCL0LeJtYWQiEuQKyJAWU6tQP2DK4g1rwUd59eApi4QJpKrrydcUGT9tvgMG9BrqOuxtdiXFT-RI5bD%3D%3D&verifyFp=verify_fakesvwebid_0000_0000_4000_8000_000000000000&fp=verify_fakesvwebid_0000_0000_4000_8000_000000000000",
+      "headers": [
+        [
+          "user-agent",
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36"
         ],
         [
           "accept",
@@ -28,7 +134,7 @@
         ],
         [
           "sec-ch-ua",
-          "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\""
+          "\"Google Chrome\";v=\"155\", \"Chromium\";v=\"155\", \"Not(A:Brand\";v=\"24\""
         ],
         [
           "sec-ch-ua-mobile",
@@ -69,12 +175,8 @@
       ],
       "cookies": [
         [
-          "ttwid",
-          "1%7Cfake-ttwid%7C1790000000%7Cabcdef"
-        ],
-        [
-          "UIFID",
-          "fake-uifid-0123456789abcdef"
+          "bd_ticket_guard_client_web_domain",
+          "2"
         ],
         [
           "passport_csrf_token",
@@ -85,8 +187,12 @@
           "fakecsrf0123456789abcdef01234567"
         ],
         [
-          "odin_tt",
-          "fake-odin-tt"
+          "UIFID",
+          "fake-uifid-0123456789abcdef"
+        ],
+        [
+          "uid_tt",
+          "fake-uid-tt"
         ],
         [
           "sessionid",
@@ -97,20 +203,52 @@
           "fake-sessionid"
         ],
         [
+          "bd_ticket_guard_ts_sign_id",
+          "ts.2.fakesign0123456789abcdef"
+        ],
+        [
           "sid_guard",
           "fake-sid-guard"
         ],
         [
-          "uid_tt",
-          "fake-uid-tt"
+          "ttwid",
+          "1%7Cfake-ttwid%7C1790000000%7Cabcdef"
         ],
         [
-          "bd_ticket_guard_client_web_domain",
+          "odin_tt",
+          "fake-odin-tt"
+        ],
+        [
+          "__security_server_data_status",
+          "1"
+        ],
+        [
+          "__security_mc_1_s_sdk_cert_key",
+          "94514d146fbb41f392"
+        ],
+        [
+          "__security_mc_1_s_sdk_sign_data_key_web_protect",
+          "3ab028bb5a2c4a089a"
+        ],
+        [
+          "_bd_ticket_crypt_doamin",
           "2"
         ],
         [
-          "bd_ticket_guard_ts_sign_id",
-          "ts.2.fakesign"
+          "csrf_session_id",
+          "1e43212494c0826bbb4b6b58143104ed"
+        ],
+        [
+          "SEARCH_RESULT_LIST_TYPE",
+          "\"single\""
+        ],
+        [
+          "live_use_vvc",
+          "\"false\""
+        ],
+        [
+          "publish_badge_show_info",
+          "0,0,0,0"
         ],
         [
           "s_v_web_id",
@@ -122,6 +260,13 @@
     }
   ],
   "responses": [
+    {
+      "status": 200,
+      "headers": {},
+      "body": {
+        "status_code": 0
+      }
+    },
     {
       "status": 200,
       "headers": {},

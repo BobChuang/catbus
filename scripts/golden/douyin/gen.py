@@ -107,6 +107,7 @@ def reset_state():
     dy_util._pure_signer = None
     dy_util._xb_signer = None
     mstoken_mod._cache.update(token='', ts=0)
+    mstoken_mod._creator_cache.update(token='', ts=0)
     try:
         import dy_apis.douyin_creator_api as creator
         creator._BROWSER_RANDOM_S_POOL.clear()

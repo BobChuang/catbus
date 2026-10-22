@@ -100,37 +100,7 @@ export async function bootstrap(d: Douyin): Promise<void> {
 
 /** 创作者中心请求的 Cookie 头（上游 creator_cookie_str 的默认分支）。 */
 export function cookieHeader(d: Douyin): string {
-  type Entry = { name: string; value: string; domain: string }
-  const all: Entry[] = [
-    ...d.jar.filter((c) => !WWW_ONLY.has(c.name)).map((c) => ({ name: c.name, value: c.value, domain: '.douyin.com' })),
-    ...d.creatorJar.map((c) => ({ name: c.name, value: c.value, domain: c.domain })),
-  ]
-  const used = new Set<number>()
-  const out: Entry[] = []
-  const take = (name: string, pred: (c: Entry) => boolean) => {
-    const i = all.findIndex((c, k) => !used.has(k) && c.name === name && pred(c))
-    if (i >= 0) {
-      used.add(i)
-      out.push(all[i]!)
-    }
-  }
-  const hostOnly = (c: Entry) => c.domain === HOST
-  const creatorDomain = (c: Entry) => c.domain.replace(/^\./, '') === HOST
-  const shared = (c: Entry) => c.domain === '.douyin.com'
-  take('gd_random', hostOnly)
-  take('x-web-secsdk-uid', hostOnly)
-  take('gfkadpd', creatorDomain)
-  take('_tea_utm_cache_2906', creatorDomain)
-  take('csrf_session_id', hostOnly)
-  take('bd_ticket_guard_client_web_domain', shared)
-  take('s_v_web_id', hostOnly)
-  take('s_v_web_id', shared)
-  take('bd_ticket_guard_client_data', shared)
-  for (const [name] of d.cookies()) take(name, shared)
-  all.forEach((c, k) => {
-    if (!used.has(k)) out.push(c)
-  })
-  return out.map((c) => `${c.name}=${c.value}`).join('; ')
+  return d.creatorCookieStr()
 }
 
 async function csrf(d: Douyin, referer: string): Promise<string> {
@@ -160,7 +130,7 @@ async function signedParams(d: Douyin, initial: [string, unknown][] = [], option
   const { platform = true, msToken = true, sign = true, body = '' } = options
   const p = new Params().update(initial)
   if (platform) p.update(creatorPlatformParams())
-  if (msToken) p.add('msToken', await d.msToken())
+  if (msToken) p.add('msToken', await d.creatorMsToken())
   if (sign) p.add('a_bogus', d.ab.sign(spliceUrl(p.pairs()), body, HOST))
   return p.pairs()
 }
@@ -202,7 +172,7 @@ function browserRandomS(d: Douyin): string {
   let pool = randomPools.get(d)
   if (!pool?.length) {
     const next = rand.isDeterministic() ? rand.mulberry32(rand.DEFAULT_SEED) : rand.random
-    pool = Array.from({ length: 64 }, () => next().toString(36).substring(2))
+    pool = Array.from({ length: 64 }, () => next().toString(36).substring(2) || '0')
     randomPools.set(d, pool)
   }
   return pool.shift()!
@@ -411,6 +381,12 @@ function textAndExtra(title: string, desc: string): [string, unknown[]] {
       extra.push({ start, end: start + 1, hashtag_id: 0, hashtag_name: '', type: 8 })
     }
     text += desc
+  } else if (title) {
+    // 上游 66eca3c（2026-10-17 浏览器实测）：空描述时补尾部分隔符
+    // —— text 末尾一个空格 + type 8 条目，与浏览器 create_v2 逐字节对齐。
+    const start = jsLength(text)
+    text += ' '
+    extra.push({ start, end: start + 1, hashtag_id: 0, hashtag_name: '', type: 8 })
   }
   return [text, extra]
 }
@@ -593,7 +569,7 @@ export async function createAweme(d: Douyin, item: unknown, referer = POST_IMAGE
     ['priority', 'u=1, i'],
   ]
   const p = new Params().add('read_aid', READ_AID).update(creatorPlatformParams())
-  p.add('msToken', await d.msToken())
+  p.add('msToken', await d.creatorMsToken())
   p.add('a_bogus', d.ab.sign(spliceUrl(p.pairs()), body, HOST))
   const res = await d.request({ method: 'POST', url: CREATOR + path, headers, query: p.pairs(), body: bodyBytes })
   return riskJson(res)

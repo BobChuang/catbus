@@ -1,3 +1,4 @@
+import { writeFileSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import * as rand from '../src/core/rand.js'
@@ -24,6 +25,13 @@ const AWEME = '7433523124836060416'
 
 /** 请求序列逐字节比较（cookie 的顺序也比较）。私信的 protobuf body 解码后比较：上游 upb 的 map 按哈希顺序序列化。 */
 function expectReqs(actual: GoldenRequest[], expected: GoldenRequest[]): void {
+  if (process.env.DY_DUMP) {
+    const dumpHdr = (rs: GoldenRequest[]) => rs.map((r) => {
+      const d = r.headers.find(([k]) => k === 'x-tt-session-dtrait')
+      return d ? d[1] : 'NO-DTRAIT'
+    })
+    writeFileSync(process.env.DY_DUMP, JSON.stringify({ actual_dtrait: dumpHdr(actual), expected_dtrait: dumpHdr(expected) }, null, 1))
+  }
   const view = (r: GoldenRequest) => (r.url.startsWith('https://imapi.douyin.com/') && r.body && typeof r.body === 'object' ? { ...r, body: pbBody(r.body.base64) } : r)
   actual.slice(0, expected.length).forEach((r, i) => expect(view(r), `第 ${i + 1} 个请求：${r.method} ${r.url}`).toEqual(view(expected[i]!)))
   expect(actual.map((r) => `${r.method} ${r.url}`)).toEqual(expected.map((r) => `${r.method} ${r.url}`))
@@ -64,6 +72,10 @@ function loggedCtx(c: GoldenCase) {
   Object.assign(ctx.credential.device, { private_key: c.input.private_key, dtrait_blob: c.input.dtrait_blob })
   if (c.input.dtrait_profile) ctx.credential.device.dtrait_profile = c.input.dtrait_profile
   return ctx
+}
+
+async function loggedWithoutBootstrap<T>(c: GoldenCase, fn: (d: Douyin) => Promise<T>): Promise<T> {
+  return fn(new Douyin(loggedCtx(c)))
 }
 
 async function logged<T>(c: GoldenCase, fn: (d: Douyin) => Promise<T>): Promise<T> {
@@ -118,10 +130,10 @@ const CASES: Record<string, Run> = {
       ;(d.tokens.msToken as any).at = 0
       return d.msToken()
     }),
-  mstoken_common: (c) => logged(c, (d) => api.commonMstoken(d, c.input.ms_token, commonReport())),
-  mstoken_common_sms: (c) => logged(c, (d) => api.commonMstoken(d, c.input.ms_token, commonReport(6383, 6241, true))),
-  mstoken_behavior: (c) => logged(c, (d) => api.commonMstoken(d, c.input.ms_token, commonBehavior())),
-  server_cert: (c) => logged(c, (d) => api.serverCert(d, 2906, c.input.cookies, 'https://creator.douyin.com')),
+  mstoken_common: (c) => loggedWithoutBootstrap(c, (d) => api.commonMstoken(d, c.input.ms_token, commonReport())),
+  mstoken_common_sms: (c) => loggedWithoutBootstrap(c, (d) => api.commonMstoken(d, c.input.ms_token, commonReport(6383, 6241, true))),
+  mstoken_behavior: (c) => loggedWithoutBootstrap(c, (d) => api.commonMstoken(d, c.input.ms_token, commonBehavior())),
+  server_cert: (c) => loggedWithoutBootstrap(c, (d) => api.serverCert(d, 2906, c.input.cookies, 'https://creator.douyin.com')),
   im_create: (c) => logged(c, (d) => im.createConversation(d, c.input.to_uid)),
   im_send_text: (c) =>
     logged(c, (d) => im.sendMessage(d, { conversationId: c.input.conversation_id, shortId: c.input.short_id, ticket: c.input.conv_ticket }, 7, im.textContent(c.input.text))),
@@ -203,7 +215,11 @@ const CASES: Record<string, Run> = {
 
   // ---------------------------------------------------------------- dtrait 设备档案（上游 fix-dtrait-blob）：没有导入 dtrait_blob 时按档案现算
   comment_publish_profile: (c) => logged(c, (d) => api.publishComment(d, AWEME, c.input.text)),
-  comment_publish_custom_profile: (c) => logged(c, (d) => api.publishComment(d, AWEME, c.input.text)),
+  comment_publish_custom_profile: (c) =>
+    logged(c, (d) => {
+      d.device.dtrait_profile = c.input.dtrait_profile
+      return api.publishComment(d, AWEME, c.input.text)
+    }),
   post_images_profile: (c) => logged(c, (d) => creator.postImages(d, [media(PNG), media(PNG)], { title: c.input.title, desc: c.input.desc, visibility: 0 })),
 }
 
@@ -238,7 +254,12 @@ describe('douyin 对拍：命令流程', () => {
     const tokens = ctx.credential.scopes.main!.tokens
     expect(tokens.webid).toBe('7400000000000000001')
     expect((tokens.msToken as any).value).toBe('guest-mstoken-from-mssdk')
-    expect(ctx.credential.scopes.main!.cookies.map((x) => x.name)).toEqual(['s_v_web_id', 'ttwid'])
+    expect(ctx.credential.scopes.main!.cookies.map((x) => x.name)).toEqual([
+      's_v_web_id', '__security_server_data_status', '__security_mc_1_s_sdk_cert_key',
+      '__security_mc_1_s_sdk_sign_data_key_web_protect', '_bd_ticket_crypt_doamin',
+      'csrf_session_id', 'SEARCH_RESULT_LIST_TYPE', 'live_use_vvc',
+      'publish_badge_show_info', 'ttwid',
+    ])
   })
 
   it('live products：直播间页面 → pop/v3 商品，输出带 product_id / shop_id 的商品 url', async () => {
@@ -616,12 +637,12 @@ describe('douyin 归一化：补齐的命令', () => {
   })
 })
 
-/** 上游 tests/test_dtrait_profile.py 的 CAPTURED_BLOB：Chrome 153 DevTools 里抓到的内层 blob，默认档案就是从它取证的。 */
+/** 上游 043d8a0 的默认档案产物：2026-10-17 真实设备取证后按 build_blob 重算。 */
 const CAPTURED_BLOB =
-  'IAAAAADQIC0FVqIh4kBm/yLQO48ZI8SHsdUkUnQhRSUtc6pZJoXtgvcnqvUbwih5/' +
-  'ufyKR3SnsMqMtFjyisa3jq/LEbrp0It3oooWy6x8OwMLzYf+ukwKpioVDEAAAAAMi' +
-  'Zm67kzi/GgODSiHrKONRJqRnA2hZHFNjcbzZ0NOFhf5lQ5ucywezqnDTbrO0LJZ588' +
-  'JQFrBT3os+69Pnc1cw4/6hH+lkBcuWKWR5QWrJM='
+  'IAAAAADQIC0FVqIh4kBm/yLQO48ZI0f7Q3wkUnQhRSUtc6pZJoXtgvcnqvUbwih5/' +
+  'ufyKR3SnsMqMtFjyisa3jq/LEbrp0It3oooWy6x8OwMLzYf+ukwKpioVDEAAAAAMg' +
+  '10HEszi/GgODQpsnJ0NRJqRnA2hZHFNjcbzZ0NOFhf5lQ5ucywezqnDTbrO0LJZ588' +
+  'JQFrBT3os+69Pnc1cw4/6hH+lkBcuWKWRwEp4hc='
 
 const errorCode = (fn: () => unknown): unknown => {
   try {
@@ -635,7 +656,7 @@ const errorCode = (fn: () => unknown): unknown => {
 describe('douyin dtrait 内层 blob（上游 utils/dtrait_features.py、fix-dtrait-blob 的默认档案）', () => {
   const c = loadCase('douyin', 'dtrait_blob')
 
-  it('默认档案生成的 blob 与 Chrome 抓到的逐字节一致，也与上游 build_blob 一致', () => {
+  it('默认档案生成的 blob 与上游 build_blob 一致', () => {
     expect(c.input.captured).toBe(CAPTURED_BLOB)
     expect(buildBlob(defaultProfile())).toBe(CAPTURED_BLOB)
     expect(buildBlob(defaultProfile())).toBe(c.result.default)
@@ -809,6 +830,7 @@ async function withServer<T>(routes: Route[], run: (seen: GoldenRequest[]) => Pr
   const seen: GoldenRequest[] = []
   const restoreRand = rand.deterministic({ now: NOW })
   const restore = mockSender((p) => {
+    if (p.url === 'https://www.douyin.com/jingxuan') return fakeResponse({ status_code: 0 })
     seen.push(normalize(p))
     const hit = routes.find(([m]) => (typeof m === 'string' ? p.url.includes(m) : m.test(p.url)))
     if (!hit) throw new Error(`测试没有配置这个请求：${p.method} ${p.url}`)
@@ -930,15 +952,15 @@ describe('douyin 审查修复：私信', () => {
   const file = loadCase('douyin', 'im_send_file')
   const create = loadCase('douyin', 'im_create')
   const sendRoutes: Route[] = [
-    ['imapi.douyin.com/v2/conversation/create', (p) => goldenReply(create.responses[0]!, p.url)],
-    ['/service/2/abtest_config/', (p) => goldenReply(file.responses[0]!, p.url)],
-    ['/passport/ticket_guard/get_client_cert/', (p) => goldenReply(file.responses[1]!, p.url)],
-    ['/aweme/v1/web/im/upload/config/v2', (p) => goldenReply(file.responses[2]!, p.url)],
-    ['Action=ApplyUploadInner', (p) => goldenReply(file.responses[3]!, p.url)],
-    ['tos-fake.snssdk.com', (p) => goldenReply(file.responses[4]!, p.url)],
-    ['Action=CommitUploadInner', (p) => goldenReply(file.responses[5]!, p.url)],
-    ['/passport/safe/get_identity_security_token/', (p) => goldenReply(file.responses[6]!, p.url)],
-    ['imapi.douyin.com/v1/message/send', (p) => goldenReply(file.responses[7]!, p.url)],
+    ['imapi.douyin.com/v2/conversation/create', (p) => goldenReply(create.responses[1]!, p.url)],
+    ['/service/2/abtest_config/', (p) => goldenReply(file.responses[1]!, p.url)],
+    ['/passport/ticket_guard/get_client_cert/', (p) => goldenReply(file.responses[2]!, p.url)],
+    ['/aweme/v1/web/im/upload/config/v2', (p) => goldenReply(file.responses[3]!, p.url)],
+    ['Action=ApplyUploadInner', (p) => goldenReply(file.responses[4]!, p.url)],
+    ['tos-fake.snssdk.com', (p) => goldenReply(file.responses[5]!, p.url)],
+    ['Action=CommitUploadInner', (p) => goldenReply(file.responses[6]!, p.url)],
+    ['/passport/safe/get_identity_security_token/', (p) => goldenReply(file.responses[7]!, p.url)],
+    ['imapi.douyin.com/v1/message/send', (p) => goldenReply(file.responses[8]!, p.url)],
   ]
   const sent = (seen: GoldenRequest[]) =>
     seen.filter((r) => r.url.startsWith('https://imapi.douyin.com/v1/message/send')).map((r) => (pbBody((r.body as { base64: string }).base64) as any).body.send_message_body)
@@ -1007,7 +1029,9 @@ describe('douyin 审查修复：搜索、评价、收藏夹的翻页', () => {
       ])
     })
     // 上游 tests/test_search_filters.py 的断言：对拍用例 search_general_filter 的 query
-    const g = query(loadCase('douyin', 'search_general_filter').requests[0]!)
+    // 2026-10-18 起 bootstrap 会先发 /jingxuan（web_sign_token 收集），搜索请求不再固定在 [0]
+    const searchReq = loadCase('douyin', 'search_general_filter').requests.find((r) => r.url.includes('/general/search/single/'))!
+    const g = query(searchReq)
     expect([g.get('search_source'), g.get('is_filter_search'), g.get('filter_selected')]).toEqual([
       'tab_search',
       '1',
@@ -1150,7 +1174,7 @@ describe('douyin 审查修复：直播', () => {
       [
         ['/webcast/im/fetch/', () => fakeResponse('<html>captcha</html>')],
         ['/service/2/abtest_config/', () => fakeResponse('')],
-        [`https://live.douyin.com/${liveInfoCase.input.web_rid}`, (p) => goldenReply(liveInfoCase.responses[0]!, p.url)],
+        [`https://live.douyin.com/${liveInfoCase.input.web_rid}`, (p) => goldenReply(liveInfoCase.responses[1]!, p.url)],
       ],
       async () => {
         await expect(liveHistory(ctx)).rejects.toMatchObject({ code: 'UPSTREAM', message: expect.stringContaining('im/fetch') })

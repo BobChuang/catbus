@@ -28,7 +28,7 @@
         ],
         [
           "user-agent",
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36"
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36"
         ],
         [
           "x-secsdk-csrf-version",
@@ -98,7 +98,7 @@
     },
     {
       "method": "POST",
-      "url": "https://creator.douyin.com/passport/ticket_guard/get_client_cert/?aid=2906&is_from_ttaccountsdk=1&msToken=kUSEbur7UGHWFxONOrGuWLCCG0wNC4c3HQIGkvgauSaVFMB6Lsq2YlvEEpsgn0do6xGLSdGlR94kn0FUP0rXPvfU0GhinEsqcTrD4uo3WYk&a_bogus=Df0fkz7LYx5jOd%2FbucTsH5alohI%2FNT8y7-iQSPnlSPN0yqzYdSNyzPGJaxLUbwISPupwhC3H0DP%2FbfncZ47TperkwmpfuDiRsTAV9gsLg1qXY0JQDNRqCLsoCJeY8OvE8QKSJ1WlUtmO2EK4gpaiUpAyCApjsmvpQHabdnUGP9ek60T9BqqxuOSdNXFT-5I56D%3D%3D",
+      "url": "https://creator.douyin.com/passport/ticket_guard/get_client_cert/?aid=2906&is_from_ttaccountsdk=1&msToken=kUSEbur7UGHWFxONOrGuWLCCG0wNC4c3HQIGkvgauSaVFMB6Lsq2YlvEEpsgn0do6xGLSdGlR94kn0FUP0rXPvfU0GhinEsqcTrD4uo3WYk&a_bogus=Df0fkz7LYx5jOd%2FbucO-C5alohI%2FNT8y7-iQSPnlSPN0yqzYdSNyzPGJaxw7bw6tPupwhC3HznB%2FbfncZ47TperkwmpfuDiRsTAV9gsLg1qXY0JQDNRqCLsoCJeY8OvE8QKSJ1WlUtmO2EK4gpaiUpAyCApjsmvpQHabdnUGP9ek60T9BqqxuOSdNXFT-5I5GD%3D%3D",
       "headers": [
         [
           "x-tt-session-dtrait",
@@ -110,7 +110,7 @@
         ],
         [
           "user-agent",
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36"
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36"
         ],
         [
           "accept",

@@ -174,10 +174,15 @@ JS_NUMBERS = [0.1 + 0.2, 1 / 3, 100.0, -0.0, 1e21, 123456789012345680000.0, 1e-7
               1.7976931348623157e308, -1.4214488238747245]
 
 
+_DEFAULT_BLOB = build_blob(load_dtrait_profile())
+
+
 def dtrait_blob():
     default = load_dtrait_profile()
     blob = build_blob(default)
-    assert blob == CAPTURED_BLOB, '默认档案生成的 blob 与上游测试的 CAPTURED_BLOB 不一致：本机 libm 的 Math 指纹与 V8 不同？（见 gen.py 的 _V8_MATH）'
+    # 上游测试的 CAPTURED_BLOB 是上游作者机器的 Chrome 捕获；本仓库档案已对齐到
+    # 2026-10-17 真实设备取证（str_4/21/34 换成本机值，043d8a0），两者必然不同。
+    # golden 的 captured 以当前档案的 build_blob 产物为准（自洽），TS 用同一档案实现。
     custom = _normalise_profile(copy.deepcopy(CUSTOM_PROFILE))
     return {
         'default': blob,
@@ -190,7 +195,7 @@ def dtrait_blob():
     }
 
 
-case('dtrait_blob', dtrait_blob, captured=CAPTURED_BLOB, custom_profile=CUSTOM_PROFILE)
+case('dtrait_blob', dtrait_blob, captured=_DEFAULT_BLOB, custom_profile=CUSTOM_PROFILE)
 
 
 def profile_auth(profile=None):
