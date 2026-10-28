@@ -295,9 +295,27 @@ export async function folderList(ctx: Ctx) {
   return paged(list, body.cursor, more(body.has_more) && raw.length > 0)
 }
 
+/** 同一条命令翻页时复用名称解析结果；args 由 core 在各页之间共享。 */
+const readFolderIds = new WeakMap<Ctx['args'], string>()
+
+export async function folderItems(ctx: Ctx) {
+  const d = await douyin(ctx)
+  let id = readFolderIds.get(ctx.args)
+  if (!id) {
+    const input = ctx.args.folder!
+    id = /^\d+$/.test(input) ? input : (await findFolder(ctx, d, input)).id
+    readFolderIds.set(ctx.args, id)
+  }
+  const at = cursor(ctx)
+  const body = check(ctx, await api.collectItems(d, id, at))
+  const list = (body.aweme_list ?? []).map(norm.aweme)
+  const next = body.cursor == null ? '' : String(body.cursor)
+  return paged(list, next, more(body.has_more) && list.length > 0 && next !== '' && next !== '0' && next !== at)
+}
+
 const folderId = (f: any) => n.id(f.collects_id_str ?? f.collects_id)
 
-/** 收藏夹最多翻几页（每页 20 个）找 `--folder`，防服务端游标不前进时死循环。 */
+/** 收藏夹最多翻几页（每页 20 个）查找名称，防服务端游标不前进时死循环。 */
 const FOLDER_PAGES = 50
 
 // ================================================================ product
@@ -487,7 +505,7 @@ async function diggItem(ctx: Ctx, type: '1' | '0') {
 export const itemLike = (ctx: Ctx) => diggItem(ctx, '1')
 export const itemUnlike = (ctx: Ctx) => diggItem(ctx, '0')
 
-/** `--folder`：收藏夹 ID 或名字 → (id, name)（移动接口两个都要）。逐页找，每页里 ID 优先于名字。 */
+/** 收藏夹 ID 或名字 → (id, name)（移动接口两个都要）。逐页找，每页里 ID 优先于名字。 */
 async function findFolder(ctx: Ctx, d: Douyin, input: string): Promise<{ id: string; name: string }> {
   let at = '0'
   for (let page = 0; page < FOLDER_PAGES; page++) {

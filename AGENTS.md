@@ -248,6 +248,7 @@ catbus xianyu item get <id> -e app           # app 端尚未实现：NOT_IMPLEME
 | douyin | `user search <kw> [--fans 0_1k\|1k_1w\|1w_10w\|10w_100w\|100w_] [--user-type common\|enterprise\|personal]` | 私有选项：粉丝数区间、用户类型（普通 / 企业 / 个人认证） | User[] |
 | douyin | `item publish [--poi-name <名称>] [--series <合集 id>] [--hotspot <热点词>] [--no-download]` | 私有选项：地点名称（配合 `--poi`）、加入合集、关联热点、不允许下载 | Item |
 | douyin | `item collect <item> --folder <folder>`、`item uncollect <item> --folder <folder>` | 私有选项：收藏后移进某个收藏夹 / 从某个收藏夹移出（仍保留收藏）。`<folder>` 是收藏夹 ID 或名字 | `{id}` |
+| douyin | `folder items <folder>` | 读取当前账号收藏夹里的作品；`<folder>` 接受收藏夹 ID 或完整名称。沿用 `--limit`、`--cursor`、`--all`，保留平台返回顺序，不按作品发布时间重排。接口依据补充来源 video-analyzer 的 `CollectsDetail`，复用 catbus 的登录态和签名，不在运行时调用 Python | Item[] |
 | douyin | `msg send [--file <path>] [--share <item\|user\|url>]` | 私有选项：发文件（≤10MB）、分享作品 / 用户名片 / 网页卡片 | Message |
 | douyin | `live rank <room> [--ranking contribution\|thousand]` | 私有选项：榜单，默认贡献榜，`thousand` 为千票榜 | Rank[] |
 | douyin | `live like <room> [--count N]` | 私有选项：一次点赞的次数 | `{id}` |

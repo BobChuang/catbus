@@ -1,6 +1,7 @@
 import { writeFileSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
+import { setCurrent, writeCredential } from '../src/core/auth-store.js'
 import * as rand from '../src/core/rand.js'
 import type { LocalMedia } from '../src/core/files.js'
 import { fakeResponse, type HttpResponse, mockSender, type PreparedRequest } from '../src/core/http.js'
@@ -1252,5 +1253,137 @@ describe('douyin 审查修复：TOS 上传', () => {
         else await run
       })
     }
+  })
+})
+
+describe('douyin 收藏夹内容（补充来源 video-analyzer）', () => {
+  useTempHome()
+  const folder = '7400000000000000001'
+  const work = (id: string, text: string) => ({
+    aweme_id: id, desc: text, create_time: 1790000000,
+    author: { sec_uid: SEC_UID, nickname: '测试作者' },
+    video: { cover: { url_list: ['https://example.com/cover.jpg'] } },
+    statistics: { digg_count: 3, comment_count: 2, collect_count: 1 },
+  })
+  const saveAccount = async () => {
+    const ctx = loggedFrom('collect_list')
+    await writeCredential(ctx.credential)
+    await setCurrent('douyin', 'web', ctx.credential.account)
+  }
+
+  it('ID 直接读取：GET、收藏夹参数、referer、签名和 64 位作品 ID；保留平台顺序与原始对象', async () => {
+    const { folderItems } = await commands()
+    const body = JSON.stringify({ status_code: 0, aweme_list: [work(AWEME, '收藏夹里的视频')], cursor: 20, has_more: 1 })
+      .replace(`"aweme_id":"${AWEME}"`, `"aweme_id":${AWEME}`)
+    await withServer([['/collects/video/list/', () => fakeResponse(body)]], async (seen) => {
+      const result: any = await folderItems(loggedFrom('collect_list', { args: { folder } }))
+      expect(result.data[0]).toMatchObject({ id: AWEME, text: '收藏夹里的视频', kind: 'video', author: { name: '测试作者' }, url: `https://www.douyin.com/video/${AWEME}` })
+      expect(result.data[0][RAW]).toMatchObject({ desc: '收藏夹里的视频' })
+      expect(result.page).toEqual({ cursor: '20', has_more: true })
+      expect(seen.map(reqPath)).toEqual(['GET https://www.douyin.com/aweme/v1/web/collects/video/list/'])
+      const q = query(seen[0]!)
+      expect([q.get('collects_id'), q.get('cursor'), q.get('count')]).toEqual([folder, '0', '20'])
+      expect([q.get('version_code'), q.get('version_name')]).toEqual(['170400', '17.4.0'])
+      expect(q.get('a_bogus')).toBeTruthy()
+      expect(q.get('msToken')).toBeTruthy()
+      expect(Object.fromEntries(seen[0]!.headers).referer).toBe('https://www.douyin.com/user/self?showTab=favorite_collection')
+      expect(seen[0]!.headers.some(([k]) => k === 'x-tt-session-dtrait')).toBe(false)
+    })
+  })
+
+  it('按完整名称逐页定位收藏夹；作品翻页时不重复读取收藏夹列表', async () => {
+    const { folderItems } = await commands()
+    await withServer([
+      ['/collects/list/', (p) => fakeResponse(new URL(p.url).searchParams.get('cursor') === '20'
+        ? { status_code: 0, collects_list: [{ collects_id_str: folder, collects_name: 'AI' }], cursor: 0, has_more: false }
+        : { status_code: 0, collects_list: [{ collects_id_str: '2', collects_name: '音乐' }], cursor: 20, has_more: true })],
+      ['/collects/video/list/', (p) => fakeResponse(new URL(p.url).searchParams.get('cursor') === '20'
+        ? { status_code: 0, aweme_list: [work('3', '第二页')], cursor: 0, has_more: false }
+        : { status_code: 0, aweme_list: [work('2', '第一页')], cursor: 20, has_more: true })],
+    ], async (seen) => {
+      const ctx = loggedFrom('collect_list', { args: { folder: 'AI' } })
+      const p1: any = await folderItems(ctx)
+      const p2: any = await folderItems({ ...ctx, cursor: p1.page.cursor })
+      expect([p1.data[0].text, p2.data[0].text]).toEqual(['第一页', '第二页'])
+      expect(p2.page).toEqual({ cursor: null, has_more: false })
+      expect(seen.filter((r) => r.url.includes('/collects/list/')).map((r) => query(r).get('cursor'))).toEqual(['0', '20'])
+      expect(seen.filter((r) => r.url.includes('/collects/video/list/')).map((r) => [query(r).get('collects_id'), query(r).get('cursor')])).toEqual([[folder, '0'], [folder, '20']])
+    })
+  })
+
+  it('CLI 的 --limit 截在页中间后用 --cursor 续取，不丢作品；--raw -o jsonl 返回原始对象', async () => {
+    await saveAccount()
+    await withServer([['/collects/video/list/', () => fakeResponse({ status_code: 0, aweme_list: [work('2', '较晚发布'), work('1', '较早发布')], cursor: 0, has_more: false })]], async () => {
+      const first = await cli('douyin', 'folder', 'items', folder, '--limit', '1')
+      expect(first.code).toBe(0)
+      expect(first.env.data.map((v: any) => v.id)).toEqual(['2'])
+      expect(first.env.page).toEqual({ cursor: '#skip=1', has_more: true })
+      const rest = await cli('douyin', 'folder', 'items', folder, '--limit', '10', '--cursor', first.env.page.cursor)
+      expect(rest.code).toBe(0)
+      expect(rest.env.data.map((v: any) => v.id)).toEqual(['1'])
+      expect(rest.env.page).toEqual({ cursor: null, has_more: false })
+      const raw = await cli('douyin', 'folder', 'items', folder, '--raw', '-o', 'jsonl')
+      expect(raw.code).toBe(0)
+      expect(raw.stdout.trim().split('\n').map((line) => JSON.parse(line).aweme_id)).toEqual(['2', '1'])
+    })
+  })
+
+  it('CLI 的 --all 连续翻页；名称只解析一次', async () => {
+    await saveAccount()
+    await withServer([
+      ['/collects/list/', () => fakeResponse({ status_code: 0, collects_list: [{ collects_id_str: folder, collects_name: 'AI' }], has_more: false })],
+      ['/collects/video/list/', (p) => fakeResponse(new URL(p.url).searchParams.get('cursor') === '20'
+        ? { status_code: 0, aweme_list: [work('1', '第二页')], cursor: 0, has_more: false }
+        : { status_code: 0, aweme_list: [work('2', '第一页')], cursor: 20, has_more: true })],
+    ], async (seen) => {
+      const r = await cli('douyin', 'folder', 'items', 'AI', '--all')
+      expect(r.code).toBe(0)
+      expect(r.env.data.map((v: any) => v.id)).toEqual(['2', '1'])
+      expect(r.env.page.has_more).toBe(false)
+      expect(seen.filter((r) => r.url.includes('/collects/list/'))).toHaveLength(1)
+    })
+  })
+
+  it.each([
+    { aweme_list: [], cursor: 20, has_more: true },
+    { aweme_list: [work('1', '游标不前进')], cursor: 0, has_more: true },
+    { aweme_list: [work('1', '没有后续游标')], has_more: true },
+  ])('空页或无效游标停止翻页：%j', async (body) => {
+    const { folderItems } = await commands()
+    await withServer([['/collects/video/list/', () => fakeResponse({ status_code: 0, ...body })]], async () => {
+      const r: any = await folderItems(loggedFrom('collect_list', { args: { folder } }))
+      expect(r.page).toEqual({ cursor: null, has_more: false })
+    })
+  })
+
+  it('名称不存在时提示列出收藏夹，不读取作品接口', async () => {
+    const { folderItems } = await commands()
+    await withServer([['/collects/list/', () => fakeResponse({ status_code: 0, collects_list: [], has_more: false })]], async (seen) => {
+      await expect(folderItems(loggedFrom('collect_list', { args: { folder: '不存在' } }))).rejects.toMatchObject({ code: 'USAGE', hint: 'catbus douyin folder list --all' })
+      expect(seen).toHaveLength(1)
+    })
+  })
+
+  it.each([
+    [{ status_code: 8, status_msg: '未登录' }, 'AUTH_EXPIRED'],
+    [{ status_code: 12345, status_msg: '收藏夹不可访问' }, 'UPSTREAM'],
+    ['', 'RISK_CONTROL'],
+  ] as const)('读取失败沿用登录失效、业务错误和风控映射：%s', async (body, code) => {
+    const { folderItems } = await commands()
+    await withServer([['/collects/video/list/', () => fakeResponse(body)]], async (seen) => {
+      await expect(folderItems(loggedFrom('collect_list', { args: { folder } }))).rejects.toMatchObject({ code })
+      expect(seen).toHaveLength(1)
+    })
+  })
+
+  it('CLI 帮助展示参数和分页选项；无登录和缺参数分别返回 AUTH_REQUIRED、USAGE', async () => {
+    const help = await cli('douyin', 'folder', 'items', '--help')
+    expect(help.stdout).toContain('收藏夹 ID 或完整名称')
+    expect(help.stdout).toContain('--cursor')
+    expect(help.stdout).toContain('web ✓')
+    const unauthenticated = await cli('douyin', 'folder', 'items', folder)
+    expect([unauthenticated.code, unauthenticated.env.error.code]).toEqual([3, 'AUTH_REQUIRED'])
+    const missing = await cli('douyin', 'folder', 'items')
+    expect([missing.code, missing.env.error.code]).toEqual([2, 'USAGE'])
   })
 })

@@ -1,3 +1,8 @@
 repo: https://github.com/cv-cat/DouYin_Spider
 commit: 2834d7710d809c84e7d7b7c3d3c4f013c43e0cd4
 branch: docs/sponsor-fastaitoken
+supplementary-repo: https://github.com/byjlw/video-analyzer
+supplementary-commit: e75c7cb90e8245d6d9d2ad47e017ac467620fdfe
+supplementary-path: video_analyzer/douyin/interface/collects.py (CollectsDetail)
+supplementary-api: GET https://www.douyin.com/aweme/v1/web/collects/video/list/
+supplementary-note: folder items 的接口契约参考本机该版本；TypeScript 独立实现，使用 catbus 既有会话与签名，不调用 Python。请求、归一化、分页和错误映射由 tests/douyin.test.ts 的命令测试覆盖。

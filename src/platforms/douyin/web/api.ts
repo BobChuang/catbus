@@ -468,6 +468,21 @@ export async function collectList(d: Douyin, cursor = '0', count = '20'): Promis
   return getSigned(d, `${WWW}/aweme/v1/web/collects/list/`, h, p)
 }
 
+/** 收藏夹作品：补充来源 video-analyzer 的 CollectsDetail，沿用 catbus 的会话与签名。 */
+export async function collectItems(d: Douyin, collectsId: string, cursor = '0', count = '20'): Promise<DyJson> {
+  const h = headerUifid(d, headers('GET')).referer(`${WWW}/user/self?showTab=favorite_collection`)
+  const p = new Params()
+  p.add('device_platform', 'webapp').add('aid', '6383').add('channel', 'channel_pc_web')
+  p.add('collects_id', collectsId).add('cursor', cursor).add('count', count)
+  p.update(platformParams('0'))
+  await withWebId(d, p)
+  withUifid(d, p)
+  withVerifyFp(d, p)
+  await withMsToken(d, p)
+  withABogus(d, p)
+  return getSigned(d, `${WWW}/aweme/v1/web/collects/video/list/`, h, p)
+}
+
 export async function followers(d: Douyin, userId: string, secUid: string, maxTime = '', count = '20'): Promise<DyJson> {
   if (!maxTime || maxTime === '0') maxTime = String(rand.nowSeconds())
   const h = headerUifid(d, headers('GET')).referer(`${WWW}/user/${secUid}`)

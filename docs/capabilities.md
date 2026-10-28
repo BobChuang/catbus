@@ -205,7 +205,7 @@
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | media upload | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | — | ✓ | — |
 | folder list | ◐ | ✓ | ✓ | ◐ | ○ | ○ | — | — | — | ○ | — |
-| folder items | ○ | ○ | ✓ | ◐ | ○ | ○ | — | — | — | ○ | — |
+| folder items | ○ | ✓ | ✓ | ◐ | ○ | ○ | — | — | — | ○ | — |
 | folder create / update | ○ | ○ | ✓ | ○ | ○ | — | — | — | — | ○ | — |
 | folder delete | ○ | ○ | ○ | ○ | ○ | — | — | — | — | ○ | — |
 | series list | ○ | ○ | ✓ | ○ | ○ | — | — | — | — | — | — |
@@ -216,6 +216,7 @@
 
 - xhs `folder list`：只列公开的收藏夹（上游只有这一个接口），收藏夹里的笔记上游没有
 - bilibili `folder list`：只列用户自己创建的收藏夹，一次返回全部
+- douyin `folder items`：只读取当前账号的收藏夹，保留平台返回顺序；接口依据补充来源 video-analyzer 的 CollectsDetail
 - bilibili `folder items`：非上游：上游没有收藏夹内容接口，请求按网页端收藏夹页补的（x/v3/fav/resource/list），没有对拍；只列出稿件
 - tiktok `poi search`：在推荐地点里按关键词筛选
 - `folder create --visibility` 取值：tiktok public / private

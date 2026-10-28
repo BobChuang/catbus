@@ -141,8 +141,10 @@ export default definePlatform({
         'media upload': write('full', 'mediaUpload'),
 
         'folder list': read('full', 'folderList'),
-        // 上游没有收藏夹内容接口
-        'folder items': 'none',
+        'folder items': read('full', 'folderItems', {
+          args: [{ name: 'folder', summary: '收藏夹 ID 或完整名称' }],
+          note: '只读取当前账号的收藏夹，保留平台返回顺序；接口依据补充来源 video-analyzer 的 CollectsDetail',
+        }),
         'folder create': 'none',
         'folder update': 'none',
         'folder delete': 'none',
