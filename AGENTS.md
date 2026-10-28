@@ -249,6 +249,9 @@ catbus xianyu item get <id> -e app           # app 端尚未实现：NOT_IMPLEME
 | douyin | `item publish [--poi-name <名称>] [--series <合集 id>] [--hotspot <热点词>] [--no-download]` | 私有选项：地点名称（配合 `--poi`）、加入合集、关联热点、不允许下载 | Item |
 | douyin | `item collect <item> --folder <folder>`、`item uncollect <item> --folder <folder>` | 私有选项：收藏后移进某个收藏夹 / 从某个收藏夹移出（仍保留收藏）。`<folder>` 是收藏夹 ID 或名字 | `{id}` |
 | douyin | `folder items <folder>` | 读取当前账号收藏夹里的作品；`<folder>` 接受收藏夹 ID 或完整名称。沿用 `--limit`、`--cursor`、`--all`，保留平台返回顺序，不按作品发布时间重排。接口依据补充来源 video-analyzer 的 `CollectsDetail`，复用 catbus 的登录态和签名，不在运行时调用 Python | Item[] |
+| douyin | `item extract <item> [--dir <目录>] [--max-frames N] [--max-seconds N] [--language zh\|en\|auto] [--ai-config <文件>] [--refresh]` | 提取视频音轨、抽样画面和语音转写。FFmpeg / Whisper 使用随 npm 包分发的 WASM，不调用 Python 或系统 FFmpeg；本地 Whisper 的 base / tiny 模型首次使用时下载到缓存并校验 SHA256。`--max-frames` 默认 8、最多 32；`--max-seconds` 显式截取前 N 秒，不给时分析完整视频；`--dir` 是产物根目录，默认使用 catbus 缓存；`--refresh` 重建提取和总结缓存 | VideoContent |
+| douyin | `item summarize <item> [提取选项] [--model <模型>]` | 下载并提取真实音轨与画面，结合转写和画面调用用户配置的兼容模型接口，生成中文总结；`--model` 覆盖配置中的总结模型。将 `content.json`、`transcript.txt`、`analysis.json`、`summary.md` 及音轨、抽样画面保存到产物目录。无音轨时明确说明仅依据画面；提取失败不使用作品文案冒充视频内容 | VideoSummary |
+| douyin | `folder summarize <folder> [提取选项] [--model <模型>] [--limit N\|--all] [--cursor <游标>]` | 按平台顺序逐条总结收藏夹内的视频，跳过图文；默认 1 个视频，`--limit` 指定视频数，`--all` 处理全部。每页只执行一个总结，避免先生成超出 limit 的收费结果；游标为不透明字符串。已有成功结果按模型、提取参数和内容复用，失败时停止，重跑可使用缓存。JSONL 可逐条输出 | VideoSummary[] |
 | douyin | `msg send [--file <path>] [--share <item\|user\|url>]` | 私有选项：发文件（≤10MB）、分享作品 / 用户名片 / 网页卡片 | Message |
 | douyin | `live rank <room> [--ranking contribution\|thousand]` | 私有选项：榜单，默认贡献榜，`thousand` 为千票榜 | Rank[] |
 | douyin | `live like <room> [--count N]` | 私有选项：一次点赞的次数 | `{id}` |
@@ -557,6 +560,22 @@ proxy = "socks5://..."            # 平台代理
 - 不读取 `HTTP(S)_PROXY` 环境变量，代理只能显式配置。
 - `catbus config set xhs.proxy <url>`，用点号表示平台段。
 
+### 5.6 视频分析模型配置
+
+- 视频分析单独使用 `~/.catbus/ai.json`（0600），不将模型密钥写进平台凭证或 `config.toml`。配置路径优先级为 `--ai-config` > `CATBUS_AI_CONFIG` > 默认路径。
+- 配置字段为 `base_url`、`api_key`、`model`、`timeout`（单次模型请求秒数，默认 180）、`max_output_tokens`（默认 8192）、`transcription` 和 `summary`。总结模型优先级为 `--model` > `CATBUS_AI_MODEL` > 文件；`CATBUS_AI_BASE_URL`、`CATBUS_AI_API_KEY` 可覆盖文件中的地址、密钥。
+- `transcription.engine` 默认 `local`；`runtime` 取 `auto`（默认）、`wasm`、`native`。auto 在 macOS arm64 有可加载的预编译原生包时使用原生 Whisper，否则明确报告并回退 WASM；显式 native 不可用时报错。`device` 取 `auto`（默认）、`metal`、`cpu`，Metal 仅限 macOS arm64 原生后端；显式 metal 不可用时报错，不能假装 GPU 已生效。`transcription.model` 取 `base`（默认）或 `tiny`，`model_path` 可指定兼容的本地 ggml 模型。也可显式设 `engine: api`，用独立的 `base_url`、`api_key`、`model` 调用 `/audio/transcriptions`；不静默切换服务。
+- 兼容 video-analyzer 的模型 JSON 配置及含 `MODEL_URL`、`MODEL_API_KEY`、`MODEL` 的 `.env` 文件，只读取模型设置，不导入其中的平台登录态，不在日志或结果中显示密钥。
+- 单纯提取视频时无需总结接口密钥。本地转写的音轨不上传；总结只向用户配置的服务发送转写文本和抽样画面。使用 `--max-seconds` 时，输出及总结明确标记已截取。
+- 视频分析分别缓存下载、音轨/画面提取、语音转写和总结；提取参数变化不重新下载，语音模型或语言变化不重新提取画面，总结模型变化只重做总结。缓存以实际媒体/音轨/模型内容哈希及相关参数绑定，缺失、损坏或不匹配时只重做受影响阶段。`--refresh` 重新处理全部阶段。
+- 本地长音轨以 30 秒为一个转写单元。WASM 每段使用独立 Node 子进程单线程推理，避免 pthread 等待，按 CPU 和内存限制最多并发 8 段；原生后端在同一常驻进程复用模型。每个完成段独立原子落盘，重跑只处理缺失或失败段，最终按原始时间顺序合并。WASM 回调中只收集文本，段落完成后再由父进程保存并报告进度。
+- `transcription.concurrency` 可选 1–8，默认按机器资源；`max_retries` 可选 0–3，默认 2，仅重试本地暂时性失败段；`chunk_timeout` 可选 30–1800 秒，默认 300。取消、无效模型及输入错误不重试；总结模型及远程转写 API 不自动重试。
+- 每次分析将解析、下载、提取、转写、总结、保存的墙钟耗时、缓存命中、各段耗时/尝试次数和总体耗时保存到独立的 `runs/<run-id>.json`；失败运行也保留已完成阶段及失败阶段的统计。结果的 `timings` 和 `files.metrics` 指向本次运行，缓存结果不能沿用旧计时；stdout 保持 JSON，进度和阶段耗时只写 stderr。
+- 原生转写使用隔离的常驻 Node 子进程，在一条视频内复用模型；Metal 串行调度，避免多实例争抢 GPU，逐段缓存和失败重试沿用同一协议。缓存键包含运行时版本、设备和分段策略，不将 WASM 结果冒充原生实测。结果与计时报告标注实际后端和可核验的 Metal 设备证据。本地音轨始终不上传。
+- 总结输入保留完整转写和全部抽样画面；每条转写文字只发送一次，以紧凑时间轴表示，不重复附上全文。原始 PNG 保留；上传副本可用等尺寸 WebP，默认质量 92，不缩小图中文字。
+- `summary.style` 为 `standard`（默认，约 1000–1600 字，保留主要观点、步骤和结论）或 `detailed`（详细笔记）；不可用硬截断伪装成功。`summary.reasoning_effort` 可为 `default|low|medium|high|xhigh|max`，default 不发送参数；gpt-6.1-sol 未指定时使用 low，其余模型不默认添加。`summary.image_format` 为 `webp|png`，gpt-6.1-sol 默认 webp，其余默认 png；`summary.stream` 默认 true，可显式关闭以兼容其他服务。不自动更换模型、提高服务档位或重试收费请求。
+- 总结通过流式读取记录请求准备、响应头、首事件、首个可见字、生成、总体耗时，以及请求字节数、输入/输出 token（服务提供时）、输出字数。响应头/首字等待包含网络、服务排队和输入处理，不能当作单独推理耗时。stdout 仍只输出完整 JSON，半截流和被取消的结果不进入成功缓存；风格、图片编码、推理设置和提示词版本均参与缓存键，命中缓存的本次计时不沿用旧网络耗时。
+
 ## 6. 输出
 
 ### 6.1 信封与格式
@@ -655,6 +674,8 @@ stdout 只输出结果。日志、提示、进度、二维码一律输出到 std
 | Fare | `id train_no date prices url:null` |
 | Transfer | `id via same_station same_train kind depart arrive duration_minutes wait legs url:null` |
 | TransferLeg | `id train_no from to depart arrive duration seats remaining prices url:null` |
+| VideoContent | `id url title text author duration processed_duration truncated video_path audio_path transcript{text language segments[{start end text}] engine model}\|null frames[{timestamp path}] extracted_at` |
+| VideoSummary | `id url model summary content:VideoContent files{analysis summary} cached` |
 
 **铁路与出行扩展字段说明**：
 - `Ticket.url` 为 12306 官方余票查询深链（`https://kyfw.12306.cn/otn/leftTicket/init?...`），可直接在浏览器打开。
@@ -785,7 +806,7 @@ stdout 只输出结果。日志、提示、进度、二维码一律输出到 std
   - win32-x64、win32-arm64；
   - darwin-arm64、darwin-x64；
   - linux-x64、linux-arm64，glibc 和 musl 都要支持。
-- CI 在全部目标系统上跑冒烟测试，musl 用 Alpine。**任何一个目标系统缺预编译包的依赖都不能用。**
+- CI 在全部目标系统上跑冒烟测试，musl 用 Alpine。**必需的原生依赖在任何目标系统缺预编译包都不能用。** 视频转写的可选加速包按 7.3 的例外处理，其他系统保持 WASM 可用。
 - 发布：
   1. 改 `package.json` 的版本号。模型变了时同时改 `packages/assets-*/package.json` 的版本，并把主包里钉住的依赖改成同一个版本（测试会检查）。
   2. 在 `CHANGELOG.md` 写好 `## [<版本>] - <日期>` 一节。
@@ -801,6 +822,7 @@ stdout 只输出结果。日志、提示、进度、二维码一律输出到 std
 原则：
 - 优先纯 JS / WASM。
 - 原生依赖必须在全部目标系统上都有预编译包，不能有 install 脚本，也不能需要 node-gyp。
+- 视频转写的可选加速包例外：允许仅在其声明的系统/架构上安装无 install 脚本的预编译包；当前只启用 darwin-arm64 的 Metal / Accelerate 原生包，其余系统保留 WASM。缺失加速包不得破坏 CLI 安装或其他平台功能，也不得现场编译、要求 Python、调用 Homebrew 或下载未固定版本的可执行文件。
 - 一律用最新版，由 `package-lock.json` 锁定。
 
 | 用途 | 选择 |

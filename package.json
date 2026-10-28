@@ -33,7 +33,8 @@
   "files": [
     "dist",
     "static",
-    "assets/banner.txt"
+    "assets/banner.txt",
+    "THIRD_PARTY_NOTICES.md"
   ],
   "engines": {
     "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
@@ -55,6 +56,7 @@
   "dependencies": {
     "@cv-cat/catbus-assets-jd": "0.1.0",
     "@cv-cat/catbus-assets-ocr": "0.1.0",
+    "@ffmpeg/core": "0.12.10",
     "@napi-rs/canvas": "^1.0.9",
     "@techstark/opencv-js": "^5.0.0-release.1",
     "crypto-js": "^4.2.0",
@@ -63,6 +65,7 @@
     "protobufjs": "^8.8.0",
     "qrcode": "^1.5.4",
     "smol-toml": "^1.9.0",
+    "whisper.cpp": "1.0.3",
     "wreq-js": "^3.2.0",
     "zod": "^4.6.5"
   },
@@ -73,5 +76,8 @@
     "@types/qrcode": "^1.5.6",
     "typescript": "^7.0.2",
     "vitest": "^5.0.2"
+  },
+  "optionalDependencies": {
+    "@fugood/node-whisper-darwin-arm64": "1.2.0-rc.1"
   }
 }

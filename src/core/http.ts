@@ -51,6 +51,7 @@ export interface HttpRequest {
   redirect?: 'follow' | 'manual'
   /** 秒，默认用客户端的超时。 */
   timeout?: number
+  signal?: AbortSignal
 }
 
 /** 实际要发出的请求。对拍测试比较的就是它。 */
@@ -99,6 +100,7 @@ interface SendOptions {
   timeout: number
   redirect: 'follow' | 'manual'
   disableDefaultHeaders: boolean
+  signal?: AbortSignal
 }
 
 const REDIRECT_STATUS = new Set([301, 302, 303, 307, 308])
@@ -137,6 +139,7 @@ const wreqSender: Sender = async (p, o) => {
     body,
     transport: await transportFor(o),
     timeout: o.timeout * 1000,
+    signal: o.signal,
     redirect: o.redirect,
     disableDefaultHeaders: o.disableDefaultHeaders,
   }) as unknown as HttpResponse
@@ -289,6 +292,7 @@ export class HttpClient {
       timeout: req.timeout ?? o.timeout ?? 30,
       redirect: 'manual',
       disableDefaultHeaders: o.disableDefaultHeaders ?? true,
+      signal: req.signal,
     }
     // 表单 POST：libcurl 会自己补 content-type，wreq 不会
     if (req.form !== undefined && prepared.method === 'POST' && !hasHeader(prepared.headers, 'content-type')) {

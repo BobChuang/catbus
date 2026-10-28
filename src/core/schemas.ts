@@ -300,11 +300,95 @@ export interface Transfer {
   legs: TransferLeg[]
 }
 
+export interface VideoTranscript {
+  text: string
+  language: string
+  segments: { start: number; end: number; text: string }[]
+  engine: 'local' | 'api'
+  model: string
+  runtime?: 'wasm' | 'native'
+  backend?: 'cpu' | 'metal'
+  runtime_version?: string
+}
+
+export interface VideoContent {
+  id: string
+  url: string | null
+  title: string | null
+  text: string | null
+  author: UserRef | null
+  duration: number
+  processed_duration: number
+  truncated: boolean
+  video_path: string
+  audio_path: string | null
+  transcript: VideoTranscript | null
+  frames: { timestamp: number; path: string }[]
+  extracted_at: string
+  files?: { content: string; transcript: string; metrics?: string }
+  timings?: VideoTimings
+}
+
+export interface VideoTimings {
+  run_id: string
+  started_at: string
+  duration_ms: number
+  status: 'ok' | 'error'
+  stages: { name: string; duration_ms: number; cache_hit: boolean; status: 'ok' | 'error' }[]
+  summary?: VideoSummaryMetrics
+  transcription?: {
+    runtime?: 'wasm' | 'native'
+    backend?: 'cpu' | 'metal'
+    runtime_version?: string
+    device?: string
+    backend_evidence?: string[]
+    chunks: { index: number; start: number; end: number; duration_ms: number; attempts: number; cached: boolean; status: 'ok' | 'error' }[]
+    concurrency: number
+    cached_chunks: number
+    retries: number
+  }
+}
+
+export interface VideoSummaryMetrics {
+  cached: boolean
+  style: 'standard' | 'detailed'
+  reasoning_effort?: string
+  image_format: 'webp' | 'png'
+  frames: number
+  transcript_chars: number
+  transcript_segments: number
+  input_text_bytes?: number
+  image_bytes?: number
+  preparation_ms?: number
+  request_bytes?: number
+  headers_ms?: number
+  first_event_ms?: number | null
+  first_token_ms?: number | null
+  generation_ms?: number | null
+  request_total_ms?: number
+  output_chars?: number
+  streamed?: boolean
+  response_model?: string
+  finish_reason?: string | null
+  usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number; cached_tokens?: number; reasoning_tokens?: number }
+}
+
+export interface VideoSummary {
+  id: string
+  url: string | null
+  model: string
+  summary: string
+  content: VideoContent
+  files: { analysis: string; summary: string; metrics?: string }
+  cached: boolean
+  timings?: VideoTimings
+}
+
 /** 输出类型名，注册表的 `output` 只能用这些（加 `[]` 表示数组），或 `{...}` 形式的内联结构。 */
 export const OUTPUT_TYPES = new Set([
   'User', 'Item', 'Comment', 'Folder', 'Series', 'Category', 'Keyword', 'Topic', 'Poi', 'Live', 'Event', 'Gift',
   'Rank', 'Conversation', 'Message', 'Notice', 'NoticeCount', 'Media', 'AuthStatus', 'Account', 'File', 'Subtitle',
-  'Danmaku', 'Order', 'Coupon', 'Station', 'Ticket', 'Stop', 'Fare', 'Transfer',
+  'Danmaku', 'Order', 'Coupon', 'Station', 'Ticket', 'Stop', 'Fare', 'Transfer', 'VideoContent', 'VideoSummary',
 ])
 
 /** 归一化对象上挂平台原始对象，`--raw` 时用它替换。JSON 序列化会忽略 symbol 键。 */

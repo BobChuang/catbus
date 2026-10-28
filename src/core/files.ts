@@ -1,7 +1,7 @@
 import { createWriteStream } from 'node:fs'
 import { mkdir, readFile, rename, rm, stat } from 'node:fs/promises'
 import { basename, extname, join, resolve } from 'node:path'
-import { Readable } from 'node:stream'
+import { Readable, Transform } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
 import type { ReadableStream as WebReadableStream } from 'node:stream/web'
 import { CatbusError } from './errors.js'
@@ -43,6 +43,8 @@ export function contentTypeOf(name: string): string {
 
 export interface DownloadOptions {
   headers?: HeaderInit
+  /** 内容提取的内存边界：在下载过程中限制大小，而不是下载完才拒绝。 */
+  maxBytes?: number
   /** 指定扩展名，例如 B 站 DASH 的音视频分轨。 */
   ext?: (media: Media, index: number) => string | undefined
 }
@@ -53,6 +55,7 @@ export interface DownloadOptions {
 export async function downloadMedia(ctx: HandlerContext, http: HttpClient, itemId: string, media: Media[], options: DownloadOptions = {}): Promise<File[]> {
   const dir = resolve((ctx.options.dir as string | undefined) ?? '.')
   const overwrite = Boolean(ctx.options.overwrite)
+  const tooLarge = () => new CatbusError('UNSUPPORTED', `下载文件超过此命令允许的大小（${options.maxBytes! >= 1024 * 1024 ? `${options.maxBytes! / 1024 / 1024} MiB` : `${options.maxBytes} 字节`}）`)
   await mkdir(dir, { recursive: true })
   const files: File[] = []
   for (const [i, m] of media.entries()) {
@@ -64,6 +67,7 @@ export async function downloadMedia(ctx: HandlerContext, http: HttpClient, itemI
     const path = join(dir, `${ctx.platform.id}_${itemId}_${i + 1}.${ext}`)
     const existing = await stat(path).catch(() => null)
     if (existing && !overwrite) {
+      if (options.maxBytes && existing.size > options.maxBytes) throw tooLarge()
       ctx.log.info(`已存在，跳过：${path}`)
       files.push({ path, type: m.type, url: m.url, size: existing.size })
       continue
@@ -71,10 +75,20 @@ export async function downloadMedia(ctx: HandlerContext, http: HttpClient, itemI
     ctx.log.info(`下载 ${i + 1}/${media.length}：${basename(path)}`)
     const res = await http.request({ url: m.url, headers: options.headers })
     if (!res.ok) throw new CatbusError('UPSTREAM', `下载失败：HTTP ${res.status}`, { detail: { status: res.status, url: m.url } })
+    if (options.maxBytes && Number(res.headers.get('content-length')) > options.maxBytes) {
+      await res.body?.cancel().catch(() => {})
+      throw tooLarge()
+    }
     const tmp = `${path}.part`
     try {
-      if (res.body) await pipeline(Readable.fromWeb(res.body as unknown as WebReadableStream), createWriteStream(tmp))
-      else await pipeline(Readable.from([Buffer.from(await res.arrayBuffer())]), createWriteStream(tmp))
+      let size = 0
+      const limit = new Transform({ transform(chunk: Buffer, _encoding, callback) {
+        size += chunk.length
+        if (options.maxBytes && size > options.maxBytes) return callback(tooLarge())
+        callback(null, chunk)
+      } })
+      const input = res.body ? Readable.fromWeb(res.body as unknown as WebReadableStream) : Readable.from([Buffer.from(await res.arrayBuffer())])
+      await pipeline(input, limit, createWriteStream(tmp))
       await rename(tmp, path)
     } catch (err) {
       await rm(tmp, { force: true })
