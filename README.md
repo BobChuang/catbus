@@ -169,6 +169,7 @@ catbus bilibili item search 猫 --limit 20
 | 🚀 [快速上手](docs/guide/quick-start.md) | 从安装到导出第一批数据 |
 | 🔑 [登录](docs/guide/login.md) · ⚙️ [配置](docs/guide/configuration.md) · 🐳 [Docker](docs/guide/docker.md) | 扫码 / cookie、多账号、代理、容器 |
 | 📤 [输出与错误处理](docs/guide/output.md) | 信封、归一化类型、分页、退出码 |
+| 📓 [视频提取与总结](docs/guide/video-analysis.md) | 用 CLI 总结抖音视频和收藏夹，本地语音转写与模型总结 |
 | 🧭 [各平台说明](docs/platforms/README.md) · 🗂️ [能力矩阵](docs/capabilities.md) | 每个平台支持什么、怎么传参 |
 | 🧪 [示例脚本](docs/examples/README.md) | 跨平台搜索、导出评论、备份作品、录直播弹幕 |
 | 📐 [AGENTS.md](AGENTS.md) | catbus 的规范本身 |

@@ -1,0 +1,1596 @@
+{
+  "schema": 1,
+  "video": {
+    "id": "7700949622235188506",
+    "title": "从写代码到上线，一套保证产品质量的全流程",
+    "url": "https://www.douyin.com/video/7700949622235188506",
+    "duration_seconds": 1473.634,
+    "processed_seconds": 1473.634,
+    "truncated": false,
+    "video_sha256": "79eb83d4f42b0852696812a91f5c264249dca8154cc6ccf865fbe638ad70a09e",
+    "audio_sha256": "db49adec24ba758ff5c086d14a76005c9669cb95e1c34cd7f00957dd8575af65"
+  },
+  "conditions": {
+    "node": "v22.22.3",
+    "os": "darwin",
+    "arch": "arm64",
+    "cpu": "Apple M3 Max",
+    "logical_cpus": 14,
+    "memory_bytes": 38654705664,
+    "speech_model": "base",
+    "speech_runtime": "whisper.cpp@1.0.3 WASM single-thread per process",
+    "summary_model": "gpt-6.1-sol",
+    "frames": 8,
+    "concurrency": 8,
+    "model_pre_downloaded": true,
+    "fresh_result_caches": true,
+    "runs_per_variant": 1,
+    "sequential_runs": true
+  },
+  "original_debug_run": {
+    "wall_ms": 2279870,
+    "note": "上轮含排障和反复修改的 38 分钟，不作为纯代码性能基线"
+  },
+  "before": {
+    "started_at": "2026-10-28T05:54:54.164Z",
+    "total_ms": 859413,
+    "stage_ms": {
+      "resolve": 846,
+      "download": 7342,
+      "extract": 6053,
+      "transcribe": 773564,
+      "summarize": 71584,
+      "save": null
+    },
+    "timing_method": "stderr 事件到达时间，模型阶段含总结文件保存，保存无法单独分离",
+    "transcript_chars": 9224
+  },
+  "after": {
+    "started_at": "2026-10-28T06:09:13.948Z",
+    "total_ms": 697641,
+    "stage_ms": {
+      "resolve": 741,
+      "download": 7724,
+      "extract": 5951,
+      "transcribe": 602349,
+      "summarize": 80708,
+      "save": 7
+    },
+    "timing_method": "程序内单调时钟，保存与模型阶段分开",
+    "timings": {
+      "run_id": "eef747b9-d720-4f70-bd30-a1911e848443",
+      "started_at": "2026-10-28T06:09:14.081Z",
+      "duration_ms": 697491,
+      "status": "ok",
+      "stages": [
+        {
+          "name": "resolve",
+          "duration_ms": 741,
+          "cache_hit": false,
+          "status": "ok"
+        },
+        {
+          "name": "download",
+          "duration_ms": 7724,
+          "cache_hit": false,
+          "status": "ok"
+        },
+        {
+          "name": "extract",
+          "duration_ms": 5951,
+          "cache_hit": false,
+          "status": "ok"
+        },
+        {
+          "name": "transcribe",
+          "duration_ms": 602349,
+          "cache_hit": false,
+          "status": "ok"
+        },
+        {
+          "name": "save",
+          "duration_ms": 2,
+          "cache_hit": false,
+          "status": "ok"
+        },
+        {
+          "name": "summarize",
+          "duration_ms": 80708,
+          "cache_hit": false,
+          "status": "ok"
+        },
+        {
+          "name": "save",
+          "duration_ms": 5,
+          "cache_hit": false,
+          "status": "ok"
+        }
+      ],
+      "transcription": {
+        "chunks": [
+          {
+            "index": 0,
+            "start": 0,
+            "end": 30,
+            "duration_ms": 55885,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 1,
+            "start": 30,
+            "end": 60,
+            "duration_ms": 106254,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 2,
+            "start": 60,
+            "end": 90,
+            "duration_ms": 110226,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 3,
+            "start": 90,
+            "end": 120,
+            "duration_ms": 55456,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 4,
+            "start": 120,
+            "end": 150,
+            "duration_ms": 56685,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 5,
+            "start": 150,
+            "end": 180,
+            "duration_ms": 110705,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 6,
+            "start": 180,
+            "end": 210,
+            "duration_ms": 110959,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 7,
+            "start": 210,
+            "end": 240,
+            "duration_ms": 111982,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 8,
+            "start": 240,
+            "end": 270,
+            "duration_ms": 55167,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 9,
+            "start": 270,
+            "end": 300,
+            "duration_ms": 110169,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 10,
+            "start": 300,
+            "end": 330,
+            "duration_ms": 55579,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 11,
+            "start": 330,
+            "end": 360,
+            "duration_ms": 54371,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 12,
+            "start": 360,
+            "end": 390,
+            "duration_ms": 55239,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 13,
+            "start": 390,
+            "end": 420,
+            "duration_ms": 108573,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 14,
+            "start": 420,
+            "end": 450,
+            "duration_ms": 107243,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 15,
+            "start": 450,
+            "end": 480,
+            "duration_ms": 54090,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 16,
+            "start": 480,
+            "end": 510,
+            "duration_ms": 108101,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 17,
+            "start": 510,
+            "end": 540,
+            "duration_ms": 110457,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 18,
+            "start": 540,
+            "end": 570,
+            "duration_ms": 108589,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 19,
+            "start": 570,
+            "end": 600,
+            "duration_ms": 55166,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 20,
+            "start": 600,
+            "end": 630,
+            "duration_ms": 54586,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 21,
+            "start": 630,
+            "end": 660,
+            "duration_ms": 113536,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 22,
+            "start": 660,
+            "end": 690,
+            "duration_ms": 110728,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 23,
+            "start": 690,
+            "end": 720,
+            "duration_ms": 111981,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 24,
+            "start": 720,
+            "end": 750,
+            "duration_ms": 114562,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 25,
+            "start": 750,
+            "end": 780,
+            "duration_ms": 111299,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 26,
+            "start": 780,
+            "end": 810,
+            "duration_ms": 110934,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 27,
+            "start": 810,
+            "end": 840,
+            "duration_ms": 109217,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 28,
+            "start": 840,
+            "end": 870,
+            "duration_ms": 55925,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 29,
+            "start": 870,
+            "end": 900,
+            "duration_ms": 111252,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 30,
+            "start": 900,
+            "end": 930,
+            "duration_ms": 109971,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 31,
+            "start": 930,
+            "end": 960,
+            "duration_ms": 55848,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 32,
+            "start": 960,
+            "end": 990,
+            "duration_ms": 56124,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 33,
+            "start": 990,
+            "end": 1020,
+            "duration_ms": 112249,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 34,
+            "start": 1020,
+            "end": 1050,
+            "duration_ms": 110204,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 35,
+            "start": 1050,
+            "end": 1080,
+            "duration_ms": 55512,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 36,
+            "start": 1080,
+            "end": 1110,
+            "duration_ms": 108959,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 37,
+            "start": 1110,
+            "end": 1140,
+            "duration_ms": 111339,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 38,
+            "start": 1140,
+            "end": 1170,
+            "duration_ms": 109222,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 39,
+            "start": 1170,
+            "end": 1200,
+            "duration_ms": 110183,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 40,
+            "start": 1200,
+            "end": 1230,
+            "duration_ms": 55570,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 41,
+            "start": 1230,
+            "end": 1260,
+            "duration_ms": 54053,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 42,
+            "start": 1260,
+            "end": 1290,
+            "duration_ms": 56171,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 43,
+            "start": 1290,
+            "end": 1320,
+            "duration_ms": 56465,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 44,
+            "start": 1320,
+            "end": 1350,
+            "duration_ms": 106990,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 45,
+            "start": 1350,
+            "end": 1380,
+            "duration_ms": 110562,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 46,
+            "start": 1380,
+            "end": 1410,
+            "duration_ms": 54420,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 47,
+            "start": 1410,
+            "end": 1440,
+            "duration_ms": 106271,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 48,
+            "start": 1440,
+            "end": 1470,
+            "duration_ms": 103901,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 49,
+            "start": 1470,
+            "end": 1473.44825,
+            "duration_ms": 44405,
+            "attempts": 1,
+            "cached": false,
+            "status": "ok"
+          }
+        ],
+        "concurrency": 8,
+        "cached_chunks": 0,
+        "retries": 0
+      }
+    },
+    "transcript_chars": 9224
+  },
+  "comparison": {
+    "total_time_reduction_percent": 18.823545838845813,
+    "transcription_time_reduction_percent": 22.133268869802624,
+    "transcript_identical": true
+  },
+  "warm": {
+    "total_ms": 1289,
+    "cached": true,
+    "timings": {
+      "run_id": "b3eef165-c03b-4b98-b21e-32067cdfae6d",
+      "started_at": "2026-10-28T06:20:52.106Z",
+      "duration_ms": 1107,
+      "status": "ok",
+      "stages": [
+        {
+          "name": "resolve",
+          "duration_ms": 801,
+          "cache_hit": false,
+          "status": "ok"
+        },
+        {
+          "name": "download",
+          "duration_ms": 50,
+          "cache_hit": true,
+          "status": "ok"
+        },
+        {
+          "name": "extract",
+          "duration_ms": 33,
+          "cache_hit": true,
+          "status": "ok"
+        },
+        {
+          "name": "transcribe",
+          "duration_ms": 215,
+          "cache_hit": true,
+          "status": "ok"
+        },
+        {
+          "name": "save",
+          "duration_ms": 2,
+          "cache_hit": false,
+          "status": "ok"
+        },
+        {
+          "name": "summarize",
+          "duration_ms": 1,
+          "cache_hit": true,
+          "status": "ok"
+        }
+      ],
+      "transcription": {
+        "chunks": [
+          {
+            "index": 0,
+            "start": 0,
+            "end": 30,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 1,
+            "start": 30,
+            "end": 60,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 2,
+            "start": 60,
+            "end": 90,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 3,
+            "start": 90,
+            "end": 120,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 4,
+            "start": 120,
+            "end": 150,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 5,
+            "start": 150,
+            "end": 180,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 6,
+            "start": 180,
+            "end": 210,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 7,
+            "start": 210,
+            "end": 240,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 8,
+            "start": 240,
+            "end": 270,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 9,
+            "start": 270,
+            "end": 300,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 10,
+            "start": 300,
+            "end": 330,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 11,
+            "start": 330,
+            "end": 360,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 12,
+            "start": 360,
+            "end": 390,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 13,
+            "start": 390,
+            "end": 420,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 14,
+            "start": 420,
+            "end": 450,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 15,
+            "start": 450,
+            "end": 480,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 16,
+            "start": 480,
+            "end": 510,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 17,
+            "start": 510,
+            "end": 540,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 18,
+            "start": 540,
+            "end": 570,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 19,
+            "start": 570,
+            "end": 600,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 20,
+            "start": 600,
+            "end": 630,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 21,
+            "start": 630,
+            "end": 660,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 22,
+            "start": 660,
+            "end": 690,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 23,
+            "start": 690,
+            "end": 720,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 24,
+            "start": 720,
+            "end": 750,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 25,
+            "start": 750,
+            "end": 780,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 26,
+            "start": 780,
+            "end": 810,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 27,
+            "start": 810,
+            "end": 840,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 28,
+            "start": 840,
+            "end": 870,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 29,
+            "start": 870,
+            "end": 900,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 30,
+            "start": 900,
+            "end": 930,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 31,
+            "start": 930,
+            "end": 960,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 32,
+            "start": 960,
+            "end": 990,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 33,
+            "start": 990,
+            "end": 1020,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 34,
+            "start": 1020,
+            "end": 1050,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 35,
+            "start": 1050,
+            "end": 1080,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 36,
+            "start": 1080,
+            "end": 1110,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 37,
+            "start": 1110,
+            "end": 1140,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 38,
+            "start": 1140,
+            "end": 1170,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 39,
+            "start": 1170,
+            "end": 1200,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 40,
+            "start": 1200,
+            "end": 1230,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 41,
+            "start": 1230,
+            "end": 1260,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 42,
+            "start": 1260,
+            "end": 1290,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 43,
+            "start": 1290,
+            "end": 1320,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 44,
+            "start": 1320,
+            "end": 1350,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 45,
+            "start": 1350,
+            "end": 1380,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 46,
+            "start": 1380,
+            "end": 1410,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 47,
+            "start": 1410,
+            "end": 1440,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 48,
+            "start": 1440,
+            "end": 1470,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 49,
+            "start": 1470,
+            "end": 1473.44825,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          }
+        ],
+        "concurrency": 8,
+        "cached_chunks": 50,
+        "retries": 0
+      }
+    }
+  },
+  "recovery": {
+    "total_ms": 109132,
+    "scenario": "只移走第 34 段与聚合转写缓存；主动 SIGKILL 本次转写子进程一次；调用 item extract，避免额外总结费用",
+    "timings": {
+      "run_id": "cc5f0c27-d68c-4de4-b17f-50dcb865ebf1",
+      "started_at": "2026-10-28T06:20:53.381Z",
+      "duration_ms": 109024,
+      "status": "ok",
+      "stages": [
+        {
+          "name": "resolve",
+          "duration_ms": 571,
+          "cache_hit": false,
+          "status": "ok"
+        },
+        {
+          "name": "download",
+          "duration_ms": 37,
+          "cache_hit": true,
+          "status": "ok"
+        },
+        {
+          "name": "extract",
+          "duration_ms": 30,
+          "cache_hit": true,
+          "status": "ok"
+        },
+        {
+          "name": "transcribe",
+          "duration_ms": 108379,
+          "cache_hit": false,
+          "status": "ok"
+        },
+        {
+          "name": "save",
+          "duration_ms": 1,
+          "cache_hit": false,
+          "status": "ok"
+        }
+      ],
+      "transcription": {
+        "chunks": [
+          {
+            "index": 0,
+            "start": 0,
+            "end": 30,
+            "duration_ms": 1,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 1,
+            "start": 30,
+            "end": 60,
+            "duration_ms": 1,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 2,
+            "start": 60,
+            "end": 90,
+            "duration_ms": 1,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 3,
+            "start": 90,
+            "end": 120,
+            "duration_ms": 1,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 4,
+            "start": 120,
+            "end": 150,
+            "duration_ms": 1,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 5,
+            "start": 150,
+            "end": 180,
+            "duration_ms": 1,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 6,
+            "start": 180,
+            "end": 210,
+            "duration_ms": 2,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 7,
+            "start": 210,
+            "end": 240,
+            "duration_ms": 1,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 8,
+            "start": 240,
+            "end": 270,
+            "duration_ms": 1,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 9,
+            "start": 270,
+            "end": 300,
+            "duration_ms": 1,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 10,
+            "start": 300,
+            "end": 330,
+            "duration_ms": 1,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 11,
+            "start": 330,
+            "end": 360,
+            "duration_ms": 1,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 12,
+            "start": 360,
+            "end": 390,
+            "duration_ms": 1,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 13,
+            "start": 390,
+            "end": 420,
+            "duration_ms": 1,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 14,
+            "start": 420,
+            "end": 450,
+            "duration_ms": 1,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 15,
+            "start": 450,
+            "end": 480,
+            "duration_ms": 1,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 16,
+            "start": 480,
+            "end": 510,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 17,
+            "start": 510,
+            "end": 540,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 18,
+            "start": 540,
+            "end": 570,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 19,
+            "start": 570,
+            "end": 600,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 20,
+            "start": 600,
+            "end": 630,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 21,
+            "start": 630,
+            "end": 660,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 22,
+            "start": 660,
+            "end": 690,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 23,
+            "start": 690,
+            "end": 720,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 24,
+            "start": 720,
+            "end": 750,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 25,
+            "start": 750,
+            "end": 780,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 26,
+            "start": 780,
+            "end": 810,
+            "duration_ms": 3,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 27,
+            "start": 810,
+            "end": 840,
+            "duration_ms": 4,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 28,
+            "start": 840,
+            "end": 870,
+            "duration_ms": 4,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 29,
+            "start": 870,
+            "end": 900,
+            "duration_ms": 4,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 30,
+            "start": 900,
+            "end": 930,
+            "duration_ms": 3,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 31,
+            "start": 930,
+            "end": 960,
+            "duration_ms": 4,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 32,
+            "start": 960,
+            "end": 990,
+            "duration_ms": 4,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 33,
+            "start": 990,
+            "end": 1020,
+            "duration_ms": 108163,
+            "attempts": 2,
+            "cached": false,
+            "status": "ok"
+          },
+          {
+            "index": 34,
+            "start": 1020,
+            "end": 1050,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 35,
+            "start": 1050,
+            "end": 1080,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 36,
+            "start": 1080,
+            "end": 1110,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 37,
+            "start": 1110,
+            "end": 1140,
+            "duration_ms": 1,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 38,
+            "start": 1140,
+            "end": 1170,
+            "duration_ms": 1,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 39,
+            "start": 1170,
+            "end": 1200,
+            "duration_ms": 1,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 40,
+            "start": 1200,
+            "end": 1230,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 41,
+            "start": 1230,
+            "end": 1260,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 42,
+            "start": 1260,
+            "end": 1290,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 43,
+            "start": 1290,
+            "end": 1320,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 44,
+            "start": 1320,
+            "end": 1350,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 45,
+            "start": 1350,
+            "end": 1380,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 46,
+            "start": 1380,
+            "end": 1410,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 47,
+            "start": 1410,
+            "end": 1440,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 48,
+            "start": 1440,
+            "end": 1470,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 49,
+            "start": 1470,
+            "end": 1473.44825,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          }
+        ],
+        "concurrency": 8,
+        "cached_chunks": 49,
+        "retries": 1
+      }
+    },
+    "fault": {
+      "signal": "SIGKILL",
+      "segment_index": 33,
+      "cpu_percent": 100.1,
+      "elapsed_ms": 2613
+    }
+  },
+  "limits": [
+    "各版本仅测一次；系统负载、CPU 温度和模型服务延迟可能变化",
+    "未更换模型、降低画面数或截短视频",
+    "缓存复跑耗时与首次完整处理耗时分别报告"
+  ],
+  "validation": {
+    "typecheck": "passed",
+    "offline_tests_passed": 1083,
+    "input_video_bytes_identical": true,
+    "input_audio_bytes_identical": true,
+    "transcript_identical": true
+  }
+}

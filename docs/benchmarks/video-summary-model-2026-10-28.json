@@ -1,0 +1,1316 @@
+{
+  "date": "2026-10-28",
+  "purpose": "仅优化总结阶段；同一完整视频、同一转写、同一组画面、同一服务和 gpt-6.1-sol。新总结请求均未命中 catbus 总结缓存。",
+  "source": {
+    "id": "7700949622235188506",
+    "url": "https://www.douyin.com/video/7700949622235188506",
+    "title": "从写代码到上线，一套保证产品质量的全流程 最近，Anthropic 发了一篇文章，介绍了 Claude Code 团队是怎么审核 AI 写的代码的。因为代码审核和整个发布流程是紧密关联的，所以文章其实把他们从写代码到上线的整个流程都讲了一遍。本期视频，我会结合自己的理解，带大家把这个流程从头到尾走一遍。看完之后，你不仅能了解该怎么审核 AI 写的代码，还能知道怎样搭建一套可靠的流程，保证 AI 写出来的产品的质量。 \n本期视频的具体内容包括：\n \n- 传统的代码发布流程，以及 PR 前、PR 中、合并时、合并后四个阶段\n- PR 前：让 AI 自己验证产品能否正常运行，用全新的 agent 检查代码质量\n- PR 中：CI、AI 审核、安全审核和按风险审批，以及 Anthropic 是怎么优化 AI 审核的\n- 合并时与合并后：合并队列、功能开关、逐步上线和回滚\n- 在 AI 写代码的时代，人最需要做的到底是什么\n- 我对未来 AI 开发方向的一些判断 \n#AI #ClaudeCode #Anthropic #代码审核#vibecoding",
+    "video_duration_seconds": 1473.634,
+    "processed_duration_seconds": 1473.634,
+    "audio_duration_seconds": 1473.44825,
+    "truncated": false,
+    "video_sha256": "79eb83d4f42b0852696812a91f5c264249dca8154cc6ccf865fbe638ad70a09e",
+    "audio_sha256": "db49adec24ba758ff5c086d14a76005c9669cb95e1c34cd7f00957dd8575af65",
+    "transcript_chars": 9387,
+    "transcript_segments": 696,
+    "transcript_text_sha256": "e16b86af75c1dddebe7327189289dac416cd3686d9d8b4ea71157d630f8c01e1",
+    "transcript_segments_sha256": "fa3078a4bbfa20a0f81ee3b5a0539534d5e7cd79af011fad99f20a33ccdd41b9",
+    "frames": [
+      {
+        "timestamp": 0,
+        "width": 960,
+        "height": 540,
+        "sha256": "ebd2fa3d411d1dfe7af0dc11080cc7be387c49d885ef3b78a53c023161bd576a",
+        "png_bytes": 125836
+      },
+      {
+        "timestamp": 184.20425,
+        "width": 960,
+        "height": 540,
+        "sha256": "0263731cf300b40e416dea5358aae4e1501253cfaad439835a175304cfbea01c",
+        "png_bytes": 287514
+      },
+      {
+        "timestamp": 368.4085,
+        "width": 960,
+        "height": 540,
+        "sha256": "e067102e959b7357dc7a8de62fdda6a4db8b86cc551c66973a8169fee5135776",
+        "png_bytes": 286437
+      },
+      {
+        "timestamp": 552.61275,
+        "width": 960,
+        "height": 540,
+        "sha256": "1547aadc4c379e3793173f5a4049ad522c9bc60e8b46b8bc024638f560c0a8c1",
+        "png_bytes": 306850
+      },
+      {
+        "timestamp": 736.817,
+        "width": 960,
+        "height": 540,
+        "sha256": "d3d955c4382ab3c70e08bf480240810b6b78d4e2afa5fecc19ce0ba3cf0c09b4",
+        "png_bytes": 235282
+      },
+      {
+        "timestamp": 921.02125,
+        "width": 960,
+        "height": 540,
+        "sha256": "700a7ec05eb51d6ae27d1623f612ef4a8e9c33270867991082a720cf2212de02",
+        "png_bytes": 274518
+      },
+      {
+        "timestamp": 1105.2255,
+        "width": 960,
+        "height": 540,
+        "sha256": "aec1006824625af2432179e361a6f39d26623785d6a08138cf96408cab16461d",
+        "png_bytes": 320330
+      },
+      {
+        "timestamp": 1289.42975,
+        "width": 960,
+        "height": 540,
+        "sha256": "e78c607e372c91a8ede62af34da457b40fc70904cd736e2b85d63fe5118c653b",
+        "png_bytes": 224777
+      }
+    ]
+  },
+  "method": {
+    "model": "gpt-6.1-sol",
+    "service_unchanged": true,
+    "max_completion_tokens": 8192,
+    "local_runtime": "Node;已有 @napi-rs/canvas 编码上传副本，没有新增依赖、Python 或系统工具",
+    "baseline": "旧提示词、重复全文和 segments、原始 PNG、未指定推理和 verbosity。仅增加 stream/include_usage 观测；不是逐字节重放旧的非流式请求。",
+    "optimized": "完整转写仅一次，紧凑时间轴；8 帧等尺寸 WebP 质量 92；reasoning_effort low；标准版 verbosity low，详细版 medium；无硬截断。",
+    "api_cache": "本机总结缓存未命中；服务端 prompt cache 无法强制清空。CLI 样本服务报告 cached_tokens=18176，其余样本未报告，不能解释成零。",
+    "sample_size": "旧方案重测 1 次，优化标准版 2 次（含正式 CLI），详细版 1 次；串行请求，不足以推断 p50/p95。下载、提取和转写使用同一已完成产物，正式 CLI 在计时中明确标记缓存。"
+  },
+  "historical_reference": {
+    "summary_stage_ms": 83584,
+    "output_chars": 3390,
+    "source_report": "docs/benchmarks/video-summary-metal-2026-10-28.json",
+    "note": "历史 83.6 秒没有首字与 token 细分；仅作历史参考。"
+  },
+  "fresh_baseline": {
+    "ok": true,
+    "requested_model": "gpt-6.1-sol",
+    "response_model": "gpt-6.1-sol",
+    "prepare_ms": 3.0817499999999995,
+    "headers_ms": 20239.490875,
+    "first_event_ms": 20241.461709,
+    "first_text_ms": 20241.464084,
+    "generation_ms": 76749.570958,
+    "total_ms": 96994.116792,
+    "request_bytes": 2833579,
+    "image_bytes": 2061544,
+    "frames": 8,
+    "transcript_chars": 9387,
+    "transcript_segments": 696,
+    "output_chars": 3628,
+    "finish_reason": "stop",
+    "done": true,
+    "usage": {
+      "prompt_tokens": 28570,
+      "completion_tokens": 2316,
+      "total_tokens": 30886,
+      "input_tokens": 28570,
+      "output_tokens": 2316
+    }
+  },
+  "optimized_standard": {
+    "ok": true,
+    "model": "gpt-6.1-sol",
+    "style": "standard",
+    "metrics": {
+      "cached": false,
+      "style": "standard",
+      "reasoning_effort": "low",
+      "image_format": "webp",
+      "frames": 8,
+      "transcript_chars": 9387,
+      "transcript_segments": 696,
+      "input_text_bytes": 38316,
+      "image_bytes": 415254,
+      "preparation_ms": 76,
+      "request_bytes": 594956,
+      "first_event_ms": 7902,
+      "first_token_ms": 7902,
+      "generation_ms": 42498,
+      "headers_ms": 7900,
+      "streamed": true,
+      "usage": {
+        "prompt_tokens": 18441,
+        "completion_tokens": 1248,
+        "total_tokens": 19689
+      },
+      "finish_reason": "stop",
+      "request_total_ms": 50400,
+      "output_chars": 1860
+    },
+    "total_ms": 50481.109291,
+    "transcript_chars": 9387,
+    "frames": 8
+  },
+  "optimized_cli": {
+    "summary_stage_ms": 70556,
+    "process_wall_ms": 72511,
+    "timings": {
+      "run_id": "03c49581-b748-43bf-a1c0-70ab9d4a6dbd",
+      "started_at": "2026-10-28T08:19:28.784Z",
+      "duration_ms": 71919,
+      "status": "ok",
+      "stages": [
+        {
+          "name": "resolve",
+          "duration_ms": 956,
+          "cache_hit": false,
+          "status": "ok"
+        },
+        {
+          "name": "download",
+          "duration_ms": 43,
+          "cache_hit": true,
+          "status": "ok"
+        },
+        {
+          "name": "extract",
+          "duration_ms": 40,
+          "cache_hit": true,
+          "status": "ok"
+        },
+        {
+          "name": "transcribe",
+          "duration_ms": 310,
+          "cache_hit": true,
+          "status": "ok"
+        },
+        {
+          "name": "save",
+          "duration_ms": 2,
+          "cache_hit": false,
+          "status": "ok"
+        },
+        {
+          "name": "summarize",
+          "duration_ms": 70556,
+          "cache_hit": false,
+          "status": "ok"
+        },
+        {
+          "name": "save",
+          "duration_ms": 4,
+          "cache_hit": false,
+          "status": "ok"
+        }
+      ],
+      "transcription": {
+        "chunks": [
+          {
+            "index": 0,
+            "start": 0,
+            "end": 30,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 1,
+            "start": 30,
+            "end": 60,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 2,
+            "start": 60,
+            "end": 90,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 3,
+            "start": 90,
+            "end": 120,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 4,
+            "start": 120,
+            "end": 150,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 5,
+            "start": 150,
+            "end": 180,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 6,
+            "start": 180,
+            "end": 210,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 7,
+            "start": 210,
+            "end": 240,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 8,
+            "start": 240,
+            "end": 270,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 9,
+            "start": 270,
+            "end": 300,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 10,
+            "start": 300,
+            "end": 330,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 11,
+            "start": 330,
+            "end": 360,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 12,
+            "start": 360,
+            "end": 390,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 13,
+            "start": 390,
+            "end": 420,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 14,
+            "start": 420,
+            "end": 450,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 15,
+            "start": 450,
+            "end": 480,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 16,
+            "start": 480,
+            "end": 510,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 17,
+            "start": 510,
+            "end": 540,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 18,
+            "start": 540,
+            "end": 570,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 19,
+            "start": 570,
+            "end": 600,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 20,
+            "start": 600,
+            "end": 630,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 21,
+            "start": 630,
+            "end": 660,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 22,
+            "start": 660,
+            "end": 690,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 23,
+            "start": 690,
+            "end": 720,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 24,
+            "start": 720,
+            "end": 750,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 25,
+            "start": 750,
+            "end": 780,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 26,
+            "start": 780,
+            "end": 810,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 27,
+            "start": 810,
+            "end": 840,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 28,
+            "start": 840,
+            "end": 870,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 29,
+            "start": 870,
+            "end": 900,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 30,
+            "start": 900,
+            "end": 930,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 31,
+            "start": 930,
+            "end": 960,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 32,
+            "start": 960,
+            "end": 990,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 33,
+            "start": 990,
+            "end": 1020,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 34,
+            "start": 1020,
+            "end": 1050,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 35,
+            "start": 1050,
+            "end": 1080,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 36,
+            "start": 1080,
+            "end": 1110,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 37,
+            "start": 1110,
+            "end": 1140,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 38,
+            "start": 1140,
+            "end": 1170,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 39,
+            "start": 1170,
+            "end": 1200,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 40,
+            "start": 1200,
+            "end": 1230,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 41,
+            "start": 1230,
+            "end": 1260,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 42,
+            "start": 1260,
+            "end": 1290,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 43,
+            "start": 1290,
+            "end": 1320,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 44,
+            "start": 1320,
+            "end": 1350,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 45,
+            "start": 1350,
+            "end": 1380,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 46,
+            "start": 1380,
+            "end": 1410,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 47,
+            "start": 1410,
+            "end": 1440,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 48,
+            "start": 1440,
+            "end": 1470,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 49,
+            "start": 1470,
+            "end": 1473.44825,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          }
+        ],
+        "concurrency": 1,
+        "cached_chunks": 50,
+        "retries": 0,
+        "runtime": "native",
+        "backend": "metal",
+        "runtime_version": "1.2.0-rc.1",
+        "device": "MTL0 (Apple M3 Max)",
+        "backend_evidence": [
+          "ggml_metal_device_init: GPU name:   MTL0 (Apple M3 Max)",
+          "whisper_backend_init_gpu: using MTL0 backend",
+          "ggml_metal_init: found device: Apple M3 Max",
+          "whisper_backend_init: using BLAS backend"
+        ]
+      },
+      "summary": {
+        "cached": false,
+        "style": "standard",
+        "reasoning_effort": "low",
+        "image_format": "webp",
+        "frames": 8,
+        "transcript_chars": 9387,
+        "transcript_segments": 696,
+        "input_text_bytes": 38316,
+        "image_bytes": 415254,
+        "preparation_ms": 69,
+        "request_bytes": 594956,
+        "first_event_ms": 29923,
+        "first_token_ms": 29923,
+        "generation_ms": 40556,
+        "headers_ms": 29920,
+        "streamed": true,
+        "usage": {
+          "prompt_tokens": 18441,
+          "completion_tokens": 1220,
+          "total_tokens": 19661,
+          "cached_tokens": 18176
+        },
+        "finish_reason": "stop",
+        "request_total_ms": 70479,
+        "output_chars": 1847
+      }
+    },
+    "summary_path": "/Users/zhangganhui/orca/catbus/.build/gpu-benchmark/metal-final/douyin_7700949622235188506/summaries/de6cc5934bf77b9bfe7d81cf/summary.md",
+    "output_chars": 1847
+  },
+  "optimized_detailed": {
+    "ok": true,
+    "model": "gpt-6.1-sol",
+    "style": "detailed",
+    "metrics": {
+      "cached": false,
+      "style": "detailed",
+      "reasoning_effort": "low",
+      "image_format": "webp",
+      "frames": 8,
+      "transcript_chars": 9387,
+      "transcript_segments": 696,
+      "input_text_bytes": 38316,
+      "image_bytes": 415254,
+      "preparation_ms": 74,
+      "request_bytes": 594832,
+      "first_event_ms": 9925,
+      "first_token_ms": 9925,
+      "generation_ms": 89740,
+      "headers_ms": 9924,
+      "streamed": true,
+      "usage": {
+        "prompt_tokens": 18405,
+        "completion_tokens": 3166,
+        "total_tokens": 21571
+      },
+      "finish_reason": "stop",
+      "request_total_ms": 99665,
+      "output_chars": 4933
+    },
+    "total_ms": 99743.00070799999,
+    "transcript_chars": 9387,
+    "frames": 8
+  },
+  "warm": {
+    "process_wall_ms": 878,
+    "timings": {
+      "run_id": "a7fbac5a-c518-46b1-b895-7c29ce248ab2",
+      "started_at": "2026-10-28T08:21:14.808Z",
+      "duration_ms": 665,
+      "status": "ok",
+      "stages": [
+        {
+          "name": "resolve",
+          "duration_ms": 360,
+          "cache_hit": false,
+          "status": "ok"
+        },
+        {
+          "name": "download",
+          "duration_ms": 46,
+          "cache_hit": true,
+          "status": "ok"
+        },
+        {
+          "name": "extract",
+          "duration_ms": 31,
+          "cache_hit": true,
+          "status": "ok"
+        },
+        {
+          "name": "transcribe",
+          "duration_ms": 219,
+          "cache_hit": true,
+          "status": "ok"
+        },
+        {
+          "name": "save",
+          "duration_ms": 1,
+          "cache_hit": false,
+          "status": "ok"
+        },
+        {
+          "name": "summarize",
+          "duration_ms": 1,
+          "cache_hit": true,
+          "status": "ok"
+        }
+      ],
+      "transcription": {
+        "chunks": [
+          {
+            "index": 0,
+            "start": 0,
+            "end": 30,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 1,
+            "start": 30,
+            "end": 60,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 2,
+            "start": 60,
+            "end": 90,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 3,
+            "start": 90,
+            "end": 120,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 4,
+            "start": 120,
+            "end": 150,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 5,
+            "start": 150,
+            "end": 180,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 6,
+            "start": 180,
+            "end": 210,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 7,
+            "start": 210,
+            "end": 240,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 8,
+            "start": 240,
+            "end": 270,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 9,
+            "start": 270,
+            "end": 300,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 10,
+            "start": 300,
+            "end": 330,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 11,
+            "start": 330,
+            "end": 360,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 12,
+            "start": 360,
+            "end": 390,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 13,
+            "start": 390,
+            "end": 420,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 14,
+            "start": 420,
+            "end": 450,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 15,
+            "start": 450,
+            "end": 480,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 16,
+            "start": 480,
+            "end": 510,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 17,
+            "start": 510,
+            "end": 540,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 18,
+            "start": 540,
+            "end": 570,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 19,
+            "start": 570,
+            "end": 600,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 20,
+            "start": 600,
+            "end": 630,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 21,
+            "start": 630,
+            "end": 660,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 22,
+            "start": 660,
+            "end": 690,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 23,
+            "start": 690,
+            "end": 720,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 24,
+            "start": 720,
+            "end": 750,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 25,
+            "start": 750,
+            "end": 780,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 26,
+            "start": 780,
+            "end": 810,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 27,
+            "start": 810,
+            "end": 840,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 28,
+            "start": 840,
+            "end": 870,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 29,
+            "start": 870,
+            "end": 900,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 30,
+            "start": 900,
+            "end": 930,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 31,
+            "start": 930,
+            "end": 960,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 32,
+            "start": 960,
+            "end": 990,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 33,
+            "start": 990,
+            "end": 1020,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 34,
+            "start": 1020,
+            "end": 1050,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 35,
+            "start": 1050,
+            "end": 1080,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 36,
+            "start": 1080,
+            "end": 1110,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 37,
+            "start": 1110,
+            "end": 1140,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 38,
+            "start": 1140,
+            "end": 1170,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 39,
+            "start": 1170,
+            "end": 1200,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 40,
+            "start": 1200,
+            "end": 1230,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 41,
+            "start": 1230,
+            "end": 1260,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 42,
+            "start": 1260,
+            "end": 1290,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 43,
+            "start": 1290,
+            "end": 1320,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 44,
+            "start": 1320,
+            "end": 1350,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 45,
+            "start": 1350,
+            "end": 1380,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 46,
+            "start": 1380,
+            "end": 1410,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 47,
+            "start": 1410,
+            "end": 1440,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 48,
+            "start": 1440,
+            "end": 1470,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          },
+          {
+            "index": 49,
+            "start": 1470,
+            "end": 1473.44825,
+            "duration_ms": 0,
+            "attempts": 0,
+            "cached": true,
+            "status": "ok"
+          }
+        ],
+        "concurrency": 1,
+        "cached_chunks": 50,
+        "retries": 0,
+        "runtime": "native",
+        "backend": "metal",
+        "runtime_version": "1.2.0-rc.1",
+        "device": "MTL0 (Apple M3 Max)",
+        "backend_evidence": [
+          "ggml_metal_device_init: GPU name:   MTL0 (Apple M3 Max)",
+          "whisper_backend_init_gpu: using MTL0 backend",
+          "ggml_metal_init: found device: Apple M3 Max",
+          "whisper_backend_init: using BLAS backend"
+        ]
+      },
+      "summary": {
+        "cached": true,
+        "style": "standard",
+        "reasoning_effort": "low",
+        "image_format": "webp",
+        "frames": 8,
+        "transcript_chars": 9387,
+        "transcript_segments": 696
+      }
+    },
+    "note": "本机缓存复用，不能当作新总结生成速度。"
+  },
+  "comparison": {
+    "fresh_baseline_to_first_standard_reduction_percent": 48,
+    "fresh_baseline_to_cli_stage_reduction_percent": 27.3,
+    "historical_to_cli_stage_reduction_percent": 15.6,
+    "request_bytes_reduction_percent": 79,
+    "image_bytes_reduction_percent": 79.9,
+    "prompt_tokens_reduction_percent": 35.5,
+    "generation_ms": [
+      76749.570958,
+      42498,
+      40556
+    ],
+    "output_chars": [
+      3628,
+      1860,
+      1847
+    ]
+  },
+  "coverage": {
+    "checks": [
+      "全文重组与冻结转写逐字一致，696 段均保留",
+      "8 帧时间点、原始 PNG 哈希不变，上传副本保持 960×540",
+      "精简版包含 PR 前验证与独立审核、CI/AI/安全/风险审批、真实故障评测与误报、三轮收敛、合并队列、功能开关/渠道发布/回滚、人的五项职责和尾段趋势判断"
+    ],
+    "limits": [
+      "这是主要内容覆盖核对，不是人工逐句事实准确率评测；本地 ASR 的误识别仍在输入中。",
+      "标准版减少复述、扩写、长落地清单和部分案例细节/时间导航；不能宣称与旧长文逐项等量。详细版实测 99.7 秒，并未更快。",
+      "WebP 为有损编码；保持分辨率并保留原始 PNG，不代表像素相同。"
+    ],
+    "artifacts": {
+      "baseline": ".build/summary-benchmark/before.md",
+      "standard_first": ".build/summary-benchmark/standard.md",
+      "standard_cli": "/Users/zhangganhui/orca/catbus/.build/gpu-benchmark/metal-final/douyin_7700949622235188506/summaries/de6cc5934bf77b9bfe7d81cf/summary.md",
+      "detailed": ".build/summary-benchmark/detailed.md"
+    }
+  },
+  "findings": [
+    "本地准备约 3–76 毫秒；主要耗时在远端首字等待和后续生成。",
+    "旧方案后续生成约 76.7 秒；优化标准版约 40.6–42.5 秒，主要收益与输出 token 减少相符。",
+    "首字等待从 20.2 秒变为 7.9/29.9 秒，存在明显服务或网络波动；不能单独归因于模型推理。",
+    "没有逐项消融实验，不能为去重、编码、推理设置分配独立收益；流式用于计时和进度，未证明单独缩短生成。",
+    "保持模型和服务时，详细长文仍受生成速度限制，不承诺固定秒数。"
+  ],
+  "validation": {
+    "typecheck": "passed",
+    "offline_tests": 1105,
+    "cli_fresh": "passed",
+    "cli_warm": "passed",
+    "diff_check": "passed"
+  },
+  "references": [
+    "https://developers.openai.com/api/docs/guides/latency-optimization",
+    "https://developers.openai.com/api/docs/models/gpt-6.1-sol",
+    "https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create"
+  ]
+}

@@ -6,7 +6,17 @@
 
 ## [Unreleased]
 
-（暂无）
+- Apple Silicon 视频转写增加无安装脚本的可选预编译原生后端，自动使用 Metal，支持显式原生 CPU / WASM；同一视频复用模型，保留逐段缓存、失败重试和实际后端证据，无需 Python 或编译器。
+
+### Added
+
+- 抖音：`item extract` 提取视频音轨、抽样 PNG 和语音文本；`item summarize`、`folder summarize` 根据真实口播和画面生成中文总结。FFmpeg / Whisper 使用随 npm 分发的 WASM，无需 Python 或系统 FFmpeg；本地 Whisper 模型首次下载并校验。支持原项目模型配置、分页批量、按参数缓存、JSONL 和 Markdown 产物。
+- 抖音：`folder items <收藏夹 ID 或完整名称>`，读取收藏夹里的作品，支持 `--limit`、`--cursor`、`--all`、`--raw` 和 JSONL。接口依据补充来源 video-analyzer 的 `CollectsDetail`，使用现有抖音登录态和签名，运行时仅需 Node。
+
+### Fixed
+
+- 视频总结增加逐阶段计时、下载/提取/转写/总结独立缓存和内容哈希校验；每个语音段独立落盘，本地暂时性失败只重试该段，动态并发队列避免整批等待。每次成功或失败调用均保存独立运行报告，缓存命中不会沿用旧计时。
+- 视频总结去除重复转写输入，保留全部画面并支持等尺寸 WebP；gpt-6.1-sol 默认低推理强度和紧凑笔记，可配置详细模式。流式记录首字、生成耗时和 token 用量，取消及断流不保存成功缓存，不自动重试收费请求。
 
 ## [0.2.1] - 2026-10-22
 
