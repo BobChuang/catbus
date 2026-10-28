@@ -8,7 +8,7 @@
 | 上游仓库 | [cv-cat/DouYin_Spider](https://github.com/cv-cat/DouYin_Spider) |
 | 移植基线 | `fix-dtrait-blob` 分支的 [`c28ee5f`](https://github.com/cv-cat/DouYin_Spider/commit/c28ee5fc4d1542039601d503c97da6a1bdf0522a)（还没合进上游 master），记录在 [`src/platforms/douyin/UPSTREAM`](../../src/platforms/douyin/UPSTREAM) |
 | 端 | web ✓ · app ○ 规划中 · pc ○ 规划中 |
-| 命令（web） | 已实现 40 条（✓ 34 · ◐ 6），规划中 ○ 31 条 |
+| 命令（web） | 已实现 44 条（✓ 38 · ◐ 6），规划中 ○ 30 条 |
 
 命令表由注册表生成，与 `catbus platforms douyin` 一致；选项以 `catbus douyin <resource> <action> --help` 为准。通用的命令语法、输出结构见 [AGENTS.md 第 4 节](../../AGENTS.md#4-命令规范)。
 
@@ -59,6 +59,8 @@
 | `item list` | ◐ | 我发布的作品，带审核状态。取发布页的作品预览（work_list）；定时未发布的作品 status 为 draft。 |
 | `item media` | ✓ | 作品的媒体地址。 |
 | `item download` | ✓ | 下载作品的媒体。 |
+| `item extract` | ✓ | 提取视频音轨、抽样画面和本地 Whisper 转写；无需 Python 或系统 FFmpeg。 |
+| `item summarize` | ✓ | 基于视频真实语音和画面调用配置的模型总结，保存逐字稿、分析 JSON 和 Markdown。 |
 | `item like` | ✓ | 点赞。 |
 | `item unlike` | ✓ | 取消点赞。 |
 | `item collect` | ✓ | 收藏。私有选项 `--folder`。 |
@@ -128,7 +130,9 @@
 | 命令 | 状态 | 说明 |
 |---|---|---|
 | `folder list` | ✓ | 收藏夹列表。 |
-| `folder items`、`folder create`、`folder update`、`folder delete` | ○ | 规划中 |
+| `folder items` | ✓ | 收藏夹里的作品，接受 ID 或完整名称；支持分页，保留平台返回顺序。接口依据补充来源 video-analyzer 的 `CollectsDetail`。 |
+| `folder summarize` | ✓ | 顺序总结收藏夹内的视频，默认 1 个；`--limit` 指定数量、`--all` 全部；跳过图文，缓存已完成结果。 |
+| `folder create`、`folder update`、`folder delete` | ○ | 规划中 |
 
 ### 整组规划中
 
@@ -161,7 +165,7 @@
 
 **搜索的两个频道**：`item search` 默认走综合频道，`--sort` / `--time` / `--length` / `--range` 和 `--type image`（图文）一起放进请求的 `filter_selected`；`--type video` 走视频频道，筛选值作为单独的参数发出。综合频道带筛选值是上游 `c28ee5f` 才恢复的，还没有真机验证。
 
-抖音没有扩展命令。定义见 [AGENTS.md 4.7](../../AGENTS.md#47-平台扩展)。
+视频分析扩展为 `item extract`、`item summarize`、`folder summarize`，参数与配置见 [视频分析指南](../guide/video-analysis.md)。定义见 [AGENTS.md 4.7](../../AGENTS.md#47-平台扩展)。
 
 ## 参数格式
 
@@ -173,6 +177,7 @@
 | 商品 `<product>` | `promotion_id`（数字），或 `live products` 输出的商品 url（带 `id`、`promotion_id`、`shop_id`） |
 | 会话 `--conversation` | 单聊会话 ID，形如 `0:1:<uid>:<uid>` |
 | 分享目标 `--share` | 作品（ID 或链接）、用户（`sec_uid`、主页链接或 `me`），其余 http(s) 链接当作网页卡片 |
+| 收藏夹 `<folder>` | 当前账号的收藏夹 ID（`folder list` 输出的 `id`）或完整名称，例如 `AI` |
 
 **商品评价**：`comment list` 的参数是 jinritemai / haohuo 链接，或带 `product_id=` / `promotion_id=` 时自动按商品处理；纯 ID 要加 `--product`。商品评价需要 `product_id` 和 `shop_id`，所以要传 `live products` 输出的商品 url。
 
@@ -192,6 +197,14 @@ catbus douyin comment list "<video_url>" --limit 100 -o jsonl > comments.jsonl
 # 某个用户的全部作品
 catbus douyin user items "<user_url>" --all -o jsonl > works.jsonl
 
+# 收藏夹列表、夹内前 10 条作品、导出全部作品
+catbus douyin folder list
+catbus douyin folder items AI --limit 10
+catbus douyin folder items "<folder_id>" --all -o jsonl > collection.jsonl
+
+# 总结 AI 收藏夹前 10 个视频；需先配置模型服务
+catbus douyin folder summarize AI --limit 10 -o jsonl > ai-summaries.jsonl
+
 # 下载作品（视频或图文里的全部图片）
 catbus douyin item download "<video_url>" --dir ./douyin
 
@@ -206,6 +219,7 @@ catbus douyin comment list "<product_url>" --label 差评
 
 ## 已知限制
 
+- **收藏夹内容顺序**：保留接口返回的收藏夹顺序，不按作品发布时间重排。`created_at` 是作品发布时间，接口未提供可靠的收藏时间；前 10 条不应据此标成按收藏时间排序的最新 10 条。
 - **写操作受设备风控（dtrait）限制**：发布、评论、点赞、收藏、私信等高风险接口要求带 `x-tt-session-dtrait` 头，内层的设备特征 blob 原本只能由浏览器生成。catbus 已集成上游 `fix-dtrait-blob` 分支的做法（用随包的设备档案现算；发布、评论、收藏、收藏夹移动必须按请求 path 现算，导入的成品 `session_dtrait` 不能用），但**发布仍然失败**：`create_v2` 返回 HTTP 200 空响应，catbus 报 `RISK_CONTROL`；上游在扫码后立即发布也同样失败。
 - **点赞可能连累登录态**：实测不带 dtrait 点赞返回 HTTP 403，之后登录态被踢，只能重新扫码。点赞、收藏、评论、私信、直播发言都还没有真机验证通过，请谨慎在常用账号上尝试。
 - **综合搜索的筛选还没真机验证**：上游 `c28ee5f` 起综合频道把筛选值放进 `filter_selected` 发出（`--type image` 也随之恢复），catbus 已同步，但结果是否真的按筛选返回还没在真机上确认。

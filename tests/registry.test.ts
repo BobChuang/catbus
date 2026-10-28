@@ -62,7 +62,7 @@ describe('注册表', () => {
     const ext = Object.fromEntries(PLATFORMS.map((p) => [p.id, [...web(p).commands.values()].filter((c) => c.extension).map((c) => c.key).sort()]))
     expect(ext).toEqual({
       xhs: [],
-      douyin: [],
+      douyin: ['folder summarize', 'item extract', 'item summarize'],
       tiktok: ['folder add'],
       bilibili: [
         'article publish', 'danmaku list', 'danmaku send', 'draft delete', 'draft get', 'dynamic delete', 'dynamic publish', 'item coin', 'item subtitles',

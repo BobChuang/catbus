@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { filter, PRODUCT } from '../../core/options.js'
+import { DOWNLOAD, filter, PRODUCT } from '../../core/options.js'
 import { definePlatform, type Handler, handlers } from '../../core/registry.js'
 import { type Args, checkMsgSend, type Options } from '../../core/vocab.js'
 
@@ -14,6 +14,18 @@ const { impl: read } = handlers(load, (m, handler) => m.retryWithUifid(handler) 
  * "Uifid Not Found"，重跑就会把文字再发一次；登录重跑会再出一次二维码。缺 UIFID 时照常报 RISK_CONTROL。
  */
 const { impl: write } = handlers(load)
+
+/** 收费模型调用不整条重试；仅 analysis 模块里的平台读取步骤沿用 UIFID 修复。 */
+const { impl: analyze } = handlers(() => import('./web/analysis.js'))
+const extraction = {
+  dir: DOWNLOAD.dir.describe('视频提取和总结的产物根目录，默认使用 catbus 缓存'),
+  aiConfig: z.string().optional().describe('模型 JSON 或原项目 .env 配置文件，默认 ~/.catbus/ai.json'),
+  maxFrames: z.number().int().min(1).max(32).default(8).describe('抽样画面数量，默认 8，最多 32'),
+  maxSeconds: z.number().positive().optional().describe('只分析视频前 N 秒，默认完整视频'),
+  language: z.enum(['zh', 'en', 'auto']).default('zh').describe('语音语言，默认 zh'),
+  refresh: z.boolean().optional().describe('重新提取和总结，忽略已有分析缓存'),
+}
+const summarization = { ...extraction, model: z.string().optional().describe('总结模型名，覆盖配置中的模型') }
 
 /** 平台私有选项（AGENTS 4.7 的 douyin 行）。 */
 const folder = (summary: string) => ({ folder: z.string().optional().describe(summary) })
@@ -67,6 +79,16 @@ export default definePlatform({
         'item list': read('partial', 'itemList', { note: '取发布页的作品预览（work_list）；定时未发布的作品 status 为 draft' }),
         'item media': read('full', 'itemMedia'),
         'item download': read('full', 'itemDownload'),
+        'item extract': analyze('full', 'itemExtract', {
+          summary: '提取视频音轨、抽样画面和语音转写', args: [{ name: 'item', summary: '视频作品：ID 或 URL' }],
+          auth: 'required', output: 'VideoContent', options: extraction,
+          note: '本地 FFmpeg / Whisper；Apple Silicon 自动使用 Metal，其余系统使用 WASM；首次下载并校验语音模型，无需 Python、编译器或系统 FFmpeg',
+        }),
+        'item summarize': analyze('full', 'itemSummarize', {
+          summary: '根据视频真实语音和画面生成中文总结', args: [{ name: 'item', summary: '视频作品：ID 或 URL' }],
+          auth: 'required', output: 'VideoSummary', options: summarization,
+          note: '使用用户配置的模型服务；提取结果、逐字稿和总结保存到本地，可复用缓存',
+        }),
         'item like': write('full', 'itemLike'),
         'item unlike': write('full', 'itemUnlike'),
         'item collect': write('full', 'itemCollect', { options: folder('收藏后移进这个收藏夹（ID 或名字）') }),
@@ -144,6 +166,11 @@ export default definePlatform({
         'folder items': read('full', 'folderItems', {
           args: [{ name: 'folder', summary: '收藏夹 ID 或完整名称' }],
           note: '只读取当前账号的收藏夹，保留平台返回顺序；接口依据补充来源 video-analyzer 的 CollectsDetail',
+        }),
+        'folder summarize': analyze('full', 'folderSummarize', {
+          summary: '逐条总结收藏夹内的视频', args: [{ name: 'folder', summary: '收藏夹 ID 或完整名称' }],
+          auth: 'required', output: 'VideoSummary[]', paged: true, options: summarization,
+          note: '默认总结 1 个视频；--limit 指定视频数，--all 处理全部；跳过图文，顺序读取，已完成结果按配置缓存',
         }),
         'folder create': 'none',
         'folder update': 'none',

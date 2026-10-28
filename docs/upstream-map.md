@@ -100,6 +100,7 @@
 
 ### douyin — DouYin_Spider
 
+- **收藏夹内容补充来源**：主上游没有收藏夹内容接口。`folder items` 参考 [byjlw/video-analyzer](https://github.com/byjlw/video-analyzer) 的 `video_analyzer/douyin/interface/collects.py:CollectsDetail`（基线见 `src/platforms/douyin/UPSTREAM`），读取 `GET /aweme/v1/web/collects/video/list/`，传 `collects_id`、`cursor`、`count`，使用响应的 `aweme_list`、`cursor`、`has_more`。在 TypeScript 中独立实现，复用 catbus 的登录态、浏览器参数和签名，收藏夹读取本身不调用 Python。视频分析另以 WASM FFmpeg / Whisper 和兼容模型接口实现 `item extract`、`item summarize`、`folder summarize`，参考原项目的音轨提取、画面采样和联合总结流程，使用本机 `ai.json` 的模型配置，见视频分析指南。主上游无对应方法，因此按非上游接口用 `mockSender` 覆盖请求契约、分页和错误映射；签名沿用已有对拍覆盖。
 - **鉴权**
   - `builder/auth.py` 的 `DouyinAuth.perepare_auth(cookieStr, web_protect_, keys_)`（方法名原文如此拼写）。
   - 私信签名还需要 `ticket`、`ts_sign`、`client_cert`、`private_key`。catbus 里放在凭证文件的 `tokens` / `device`。

@@ -264,6 +264,7 @@
 
 | 平台 | 命令 |
 |---|---|
+| douyin | `item extract` ✓ · `item summarize` ✓ · `folder summarize` ✓ |
 | tiktok | `folder add` ✓ |
 | bilibili | `item coin` ✓ · `item triple` ✓ · `item subtitles` ✓ · `danmaku list` ✓ · `danmaku send` ✓ · `dynamic publish` ✓ · `dynamic delete` ✓ · `article publish` ✓ · `draft get` ✓ · `draft delete` ✓ |
 | jd | `order list` ✓ · `cart count` ✓ · `coupon list` ✓ |

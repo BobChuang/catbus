@@ -5,4 +5,6 @@ supplementary-repo: https://github.com/byjlw/video-analyzer
 supplementary-commit: e75c7cb90e8245d6d9d2ad47e017ac467620fdfe
 supplementary-path: video_analyzer/douyin/interface/collects.py (CollectsDetail)
 supplementary-api: GET https://www.douyin.com/aweme/v1/web/collects/video/list/
-supplementary-note: folder items 的接口契约参考本机该版本；TypeScript 独立实现，使用 catbus 既有会话与签名，不调用 Python。请求、归一化、分页和错误映射由 tests/douyin.test.ts 的命令测试覆盖。
+supplementary-note: folder items 的接口契约参考本机该版本；TypeScript 独立实现，使用 catbus 既有会话与签名，不调用 Python。请求、归一化、分页和错误映射由 tests/douyin.test.ts 的命令测试覆盖；视频分析运行时另见 analysis-runtime。
+analysis-source: video_analyzer/audio_processor.py, frame.py, analyzer.py (same supplementary commit; pipeline ideas only, independently implemented)
+analysis-runtime: @ffmpeg/core 0.12.10, whisper.cpp 1.0.3 (WASM); ggerganov/whisper.cpp models at 5359861c739e955e79d9a303bcbc70fb988958b1 with pinned SHA256
